@@ -1,13 +1,16 @@
 const express = require("express");
-const rateLimit = require("./node_modules/express-rate-limit/dist/index.d.cts");
+const rateLimit = require("express-rate-limit");
 const mongoSanitize = require("express-mongo-sanitize");
-const xss = require("xss");
+const xss = require("xss-clean");
+const helmet = require("helmet")
 
 const listRouter = require("./routes/listRoutes");
 const userRouter = require("./routes/userRoute");
 const AppError = require("./utils/appError");
 
 const app = express();
+
+app.use(helmet())
 
 // RATE LIMITING(requests per set time limit)
 const rateLimiter = rateLimit({
