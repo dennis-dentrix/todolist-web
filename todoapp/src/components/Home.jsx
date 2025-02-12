@@ -1,6 +1,5 @@
 /* eslint-disable react/prop-types */
 import { useState, useEffect } from "react";
-import { ToastContainer, toast } from "react-toastify";
 import styled from "@emotion/styled";
 import TaskList from "./TaskList";
 // import EditTaskForm from "./EditTaskForm";
@@ -35,9 +34,8 @@ const Home = ({ tasks, setTasks, searchTerm }) => {
     );
   };
 
-  const handleDeleteTask = (taskId, text) => {
+  const handleDeleteTask = (taskId) => {
     setTasks(tasks.filter((task) => task.id !== taskId));
-    toast(text);
   };
 
   const handleEditTask = (task) => {

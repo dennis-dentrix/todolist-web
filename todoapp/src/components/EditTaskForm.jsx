@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+/* eslint-disable react/prop-types */
+
+import { useState } from "react";
 import styled from "@emotion/styled";
 import { TextField, Button, Snackbar } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditNoteIcon from "@mui/icons-material/EditNote";
-import { ToastContainer } from "react-toastify";
 
 const EditTaskContainer = styled.div`
   position: fixed;
@@ -25,15 +26,15 @@ const EditTaskFormStyled = styled.form`
   flex-direction: column;
 `;
 
-const Input = styled.input`
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 15px;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  font-size: 1em;
-  outline: none; /* Remove default outline */
-`;
+// const Input = styled.input`
+//   width: 100%;
+//   padding: 10px;
+//   margin-bottom: 15px;
+//   border: 1px solid #ddd;
+//   border-radius: 6px;
+//   font-size: 1em;
+//   outline: none;
+// `;
 
 const ActionButtons = styled.div`
   padding-top: 1.3rem;
@@ -88,13 +89,7 @@ const DeleteButton = styled(Button)`
   }
 `;
 
-const EditTaskForm = ({
-  task,
-  onUpdate,
-  onClose,
-  onDelete,
-  ToastContainer,
-}) => {
+const EditTaskForm = ({ task, onUpdate, onClose, onDelete }) => {
   const [title, setTitle] = useState(task.title);
   const [category, setCategory] = useState(task.category);
   const [description, setDescription] = useState(task.description);
@@ -199,6 +194,13 @@ const EditTaskForm = ({
           </DeleteButton>
         </ActionButtons>
       </EditTaskFormStyled>
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={3000}
+        onClose={handleSnackbarClose}
+        message={snackbarMessage}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      />
     </EditTaskContainer>
   );
 };

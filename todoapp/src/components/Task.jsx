@@ -1,5 +1,4 @@
 /* eslint-disable react/prop-types */
-import React from "react";
 import styled from "@emotion/styled";
 import DeleteIcon from "@mui/icons-material/Delete";
 
@@ -44,17 +43,29 @@ const TaskDescription = styled.p`
   white-space: nowrap; /* Prevent wrapping */
 `;
 
-const TaskDueDate = styled.div`
+const TaskInfo = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+`;
+
+const TaskDueDate = styled.p`
   margin-top: 5px;
   font-size: 0.8em;
   color: #777;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
 `;
 
-const TaskProgress = styled.div`
+const TaskProgress = styled.p`
   margin-top: 15px;
   font-style: italic;
   color: #888;
   font-size: 0.85em;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
 `;
 
 const DeleteButton = styled(DeleteIcon)`
@@ -78,8 +89,17 @@ const Task = ({ task, onDelete, onEdit }) => {
         {task.title} <TaskCategory>{task.category}</TaskCategory>
       </TaskTitle>
       <TaskDescription>{task.description}</TaskDescription>
-      <TaskDueDate>Due Date: {task.dueDate}</TaskDueDate>
-      <TaskProgress>Progress: {task.progress}</TaskProgress>
+
+      <TaskInfo>
+        <TaskDueDate>
+          Due Date:
+          <span>{task.dueDate || new Date().toISOString().split("T")[0]}</span>
+        </TaskDueDate>
+        <TaskProgress>
+          Progress: <span>{task.progress}</span>{" "}
+        </TaskProgress>
+      </TaskInfo>
+
       {task.progress === "Complete" && (
         <DeleteButton
           onClick={(e) => {
