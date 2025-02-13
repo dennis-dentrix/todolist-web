@@ -1,6 +1,7 @@
 /* eslint-disable react/prop-types */
 import styled from "@emotion/styled";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { useEffect } from "react";
 
 const TaskContainer = styled.div`
   background-color: #fff;
@@ -81,6 +82,10 @@ const DeleteButton = styled(DeleteIcon)`
 `;
 
 const Task = ({ task, onDelete, onEdit }) => {
+  // useEffect(function () {
+  //   fetch("https://todo-backend-nks4.onrender.com/api/v1/list").then()
+  // });
+
   return (
     <TaskContainer
       onClick={() => (task.progress === "Incomplete" ? onEdit(task) : {})}

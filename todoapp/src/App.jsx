@@ -10,7 +10,7 @@ import {
 import styled from "@emotion/styled";
 import GlobalStyles from "./styles/GlobalStyles";
 import Home from "./components/Home";
-import User from "./components/User";
+import User from "./user/User";
 import Login from "./user/Login";
 import Signup from "./user/Signup";
 import NewTask from "./components/NewTask";

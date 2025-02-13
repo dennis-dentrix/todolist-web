@@ -60,7 +60,9 @@ const Home = ({ tasks, setTasks, searchTerm }) => {
   };
 
   const filteredTasks = tasks.filter((task) =>
-    task.title.toLowerCase().includes(searchTerm.toLowerCase())
+    ` ${task.title} ${task.description}`
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase())
   );
 
   return (

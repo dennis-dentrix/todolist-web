@@ -72,7 +72,7 @@ const NewTask = ({ onClose, onAddTask }) => {
       category,
       description,
       dueDate,
-      progress: "Incomplete", // Default progress
+      progress: "Incomplete",
     };
 
     // Call the onAddTask function passed from the parent component
@@ -84,7 +84,7 @@ const NewTask = ({ onClose, onAddTask }) => {
     setDescription("");
     setDueDate("");
 
-    onClose(); // Close the form after submission
+    onClose();
   };
 
   return (
