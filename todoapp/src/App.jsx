@@ -11,13 +11,15 @@ import styled from "@emotion/styled";
 import GlobalStyles from "./styles/GlobalStyles";
 import Home from "./components/Home";
 import User from "./components/User";
-import Login from "./components/Login";
-import Signup from "./components/Signup";
+import Login from "./user/Login";
+import Signup from "./user/Signup";
 import NewTask from "./components/NewTask";
 import { Button } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import EditNoteIcon from "@mui/icons-material/EditNote"; // Pen Icon
 import AccountCircleIcon from "@mui/icons-material/AccountCircle"; //Profile Picture Icon
+import ForgotPassword from "./user/Forgotpassword";
+import ResetPassword from "./user/ResetPassword";
 
 const AppContainer = styled.div`
   /* max-width: 1200px; */
@@ -189,6 +191,10 @@ const App = () => {
     return isLoggedIn ? children : <Navigate to="/login" />;
   };
 
+  const AuthRoute = ({ children }) => {
+    return !isLoggedIn ? children : <Navigate to="/" />;
+  };
+
   return (
     <Router>
       <GlobalStyles />
@@ -203,24 +209,12 @@ const App = () => {
                   <EditNoteIcon /> {/* Pen Icon */}
                 </StyledLink>
               </NavItem>
-
-              {/* {isLoggedIn ? null : (
-              <UserAuth>
-                <NavItem>
-                  <StyledLink to="/login">Login</StyledLink>
-                </NavItem>
-                <NavItem>
-                  <StyledLink to="/signup">Signup</StyledLink>
-                </NavItem>
-              </UserAuth>
-            )} */}
             </NavList>
             <ProfileIconLink to="/user">
               <AccountCircleIcon />
             </ProfileIconLink>
           </Sidebar>
         )}
-        ß
         <Content>
           {isLoggedIn && (
             <Navbar>
@@ -245,11 +239,35 @@ const App = () => {
           <Routes>
             <Route
               path="/login"
-              element={<Login setIsLoggedIn={setIsLoggedIn} />}
+              element={
+                <AuthRoute>
+                  <Login setIsLoggedIn={setIsLoggedIn} />
+                </AuthRoute>
+              }
             />
             <Route
               path="/signup"
-              element={<Signup setIsLoggedIn={setIsLoggedIn} />}
+              element={
+                <AuthRoute>
+                  <Signup setIsLoggedIn={setIsLoggedIn} />
+                </AuthRoute>
+              }
+            />
+            <Route
+              path="/forgotpassword"
+              element={
+                <AuthRoute>
+                  <ForgotPassword />
+                </AuthRoute>
+              }
+            />
+            <Route
+              path="/resetpassword"
+              element={
+                <AuthRoute>
+                  <ResetPassword />
+                </AuthRoute>
+              }
             />
             <Route
               path="/"

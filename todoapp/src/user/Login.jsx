@@ -125,6 +125,8 @@ const Login = ({ setIsLoggedIn }) => {
           required
         />
 
+        <Link to={"/forgotPassword"}>Forgot Password</Link>
+
         <ActionBtns>
           <StyledLink to="/signup">Signup</StyledLink>
           <Button type="submit">Login</Button>
