@@ -1,6 +1,7 @@
 import { useState } from "react";
 import styled from "@emotion/styled";
 import { Link } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 const PageContainer = styled.div`
   display: flex;
@@ -82,13 +83,22 @@ const StyledLink = styled(Link)`
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
 
-  const handleSubmit = (e) => {
+  // eslint-disable-next-line no-unused-vars
+  const [apiError, setApiError] = useState("");
+
+  const { forgotPassword } = useAuth();
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Implement your forgot password logic here (e.g., API call)
-    console.log("Forgot password submitted", { email });
-    alert(
-      "A reset link has been sent to your email address (not really, this is a demo)"
-    );
+
+    setApiError(""); // Reset any previous errors
+
+    try {
+      await forgotPassword(email);
+      alert("Reset link sent to your email!"); // Inform the user of success
+    } catch (error) {
+      setApiError(error); // Set API error message for display
+    }
   };
 
   return (

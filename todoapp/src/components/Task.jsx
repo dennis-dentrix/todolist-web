@@ -2,6 +2,9 @@
 import styled from "@emotion/styled";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+// import { useSelector } from "react-redux";  //Removed: No longer needed
+// import { fetchTasks } from "./taskSlice";  //Removed: Not needed, should be fetched in parent
 
 const TaskContainer = styled.div`
   background-color: #fff;
@@ -82,9 +85,16 @@ const DeleteButton = styled(DeleteIcon)`
 `;
 
 const Task = ({ task, onDelete, onEdit }) => {
-  // useEffect(function () {
-  //   fetch("https://todo-backend-nks4.onrender.com/api/v1/list").then()
-  // });
+  //Added task as a prop
+  // const dispatch = useDispatch();  //Removed: No longer dispatching here
+  // const { loading, error } = useSelector((state) => state.tasks); //Removed: Getting data in parent
+
+  // useEffect(() => { //Removed: Get data in parent component
+  //   dispatch(fetchTasks());
+  // }, [dispatch]);
+
+  // if (loading) return <div>Loading...</div>;  //Handled in parent
+  // if (error) return <div>Error fetching tasks: {error}</div>; //Handled in parent
 
   return (
     <TaskContainer

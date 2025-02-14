@@ -14,13 +14,30 @@ const TaskSection = styled.div`
   margin-right: 20px;
 `;
 
-const Home = ({ tasks, setTasks, searchTerm }) => {
+const Home = ({ searchTerm }) => {
   // Receive tasks and setTasks
   // const [searchTerm, setSearchTerm] = useState(""); // No longer needed here
   // const [selectedTask, setSelectedTask] = useState(null);
   //const [showModal, setShowModal] = useState(false); //Unused
   const [showEditTaskForm, setShowEditTaskForm] = useState(false); // Track edit mode
   const [editFormData, setEditFormData] = useState({});
+
+  const [tasks, setTasks] = useState([
+    {
+      id: 1,
+      title: "Learn React",
+      category: "Development",
+      description: "Go through the React tutorial",
+      progress: "Incomplete",
+    },
+    {
+      id: 2,
+      title: "Grocery Shopping",
+      category: "Personal",
+      description: "Buy groceries for the week",
+      progress: "Complete",
+    },
+  ]);
 
   useEffect(() => {
     // Fetch tasks from API here

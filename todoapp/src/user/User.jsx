@@ -1,9 +1,9 @@
-/* eslint-disable react/prop-types */
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import styled from "@emotion/styled";
 import { Button, TextField } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle"; //Profile Picture Icon
+import AccountCircleIcon from "@mui/icons-material/AccountCircle"; // Profile Picture Icon
+import { useAuth } from "../context/AuthContext";
 
 const UserContainer = styled.div`
   padding: 30px;
@@ -58,16 +58,13 @@ const ActionButtons = styled.div`
 
 const SaveChangesButton = styled(Button)`
   && {
-    background-color: #6c757d;
+    background-color: #6c757d; /* Bootstrap secondary color */
     color: white;
     padding: 12px 20px;
-    border: none;
     border-radius: 6px;
-    cursor: pointer;
-    font-size: 1em;
 
     &:hover {
-      background-color: #5a6268;
+      background-color: #5a6268; /* Darker on hover */
     }
   }
 `;
@@ -77,11 +74,7 @@ const ButtonStyled = styled(Button)`
     background-color: #f44336; /* Red color */
     color: white;
     padding: 10px 15px;
-    border: none;
     border-radius: 4px;
-    cursor: pointer;
-    font-size: 1em;
-    margin-top: 10px;
 
     &:hover {
       background-color: #d32f2f; /* Darker red on hover */
@@ -89,13 +82,20 @@ const ButtonStyled = styled(Button)`
   }
 `;
 
-const User = ({ handleLogout }) => {
+const User = () => {
   const navigate = useNavigate();
-  const [email, setEmail] = useState("Kevin Heart"); // Initial value
-  const [username, setUsername] = useState("kevinunhuy"); // Initial value
+  const { logout, user } = useAuth();
 
-  const handleInputChange = (e, setter) => {
-    setter(e.target.value);
+  const [email] = useState(user.email); // Set initial value from user context
+  const [username, setUsername] = useState(user.name); // Set initial value
+
+  // Optional effect to set username if user changes
+  useEffect(() => {
+    setUsername(user.name);
+  }, [user.name]);
+
+  const handleInputChange = (e) => {
+    setUsername(e.target.value); // Directly update username
   };
 
   const handleSaveChanges = () => {
@@ -110,25 +110,24 @@ const User = ({ handleLogout }) => {
     navigate("/login");
   };
 
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+  };
+
   return (
     <UserContainer>
-      <SectionTitle>Profile picture</SectionTitle>
+      <SectionTitle>Profile Picture</SectionTitle>
       <ProfilePictureSection>
         <ProfilePictureIcon />
         <ProfilePictureButtons>
-          <Button variant="contained">Change picture</Button>
-          <Button variant="outlined">Delete picture</Button>
+          <Button variant="contained">Change Picture</Button>
+          <Button variant="outlined">Delete Picture</Button>
         </ProfilePictureButtons>
       </ProfilePictureSection>
 
       <SectionTitle>Email</SectionTitle>
-      <InputField
-        disabled
-        fullWidth
-        label="Email"
-        value={email}
-        onChange={(e) => handleInputChange(e, setEmail)}
-      />
+      <InputField disabled fullWidth label="Email" value={email} />
 
       <SectionTitle>Username</SectionTitle>
       <UsernameSection>
@@ -136,25 +135,22 @@ const User = ({ handleLogout }) => {
           fullWidth
           label="Username"
           value={username}
-          onChange={(e) => handleInputChange(e, setUsername)}
+          onChange={handleInputChange}
         />
         <AvailableChangeText>
-          Available change in 25/04/2024
+          Available change in {new Date("2024-04-25").toLocaleDateString()}{" "}
+          {/* Example date */}
         </AvailableChangeText>
       </UsernameSection>
 
       <ActionButtons>
         <SaveChangesButton variant="contained" onClick={handleSaveChanges}>
-          Save changes
+          Save Changes
         </SaveChangesButton>
         <ButtonStyled variant="contained" onClick={handleLogout}>
           Logout
         </ButtonStyled>
-        <ButtonStyled
-          variant="contained"
-          color="primary"
-          onClick={handleDeleteAccount}
-        >
+        <ButtonStyled variant="contained" onClick={handleDeleteAccount}>
           Delete Account
         </ButtonStyled>
       </ActionButtons>
