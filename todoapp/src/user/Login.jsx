@@ -99,8 +99,8 @@ const Login = () => {
           Forgot Password?
         </ForgotPasswordLink>
         <ActionBtns>
-          <StyledLink to="/signup">Signup</StyledLink>
           <Button type="submit">Login</Button>
+          <StyledLink to="/signup">Signup</StyledLink>
         </ActionBtns>
       </LoginForm>
     </PageContainer>

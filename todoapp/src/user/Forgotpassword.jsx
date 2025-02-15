@@ -2,6 +2,7 @@ import { useState } from "react";
 import styled from "@emotion/styled";
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { Snackbar } from "@mui/material";
 
 const PageContainer = styled.div`
   display: flex;
@@ -83,6 +84,9 @@ const StyledLink = styled(Link)`
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
 
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+
   // eslint-disable-next-line no-unused-vars
   const [apiError, setApiError] = useState("");
 
@@ -95,10 +99,14 @@ const ForgotPassword = () => {
 
     try {
       await forgotPassword(email);
-      alert("Reset link sent to your email!"); // Inform the user of success
+      setSnackbarMessage("Reset link sent to your email!");
+      setSnackbarOpen(true);
     } catch (error) {
       setApiError(error); // Set API error message for display
     }
+  };
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
   };
 
   return (
@@ -123,6 +131,14 @@ const ForgotPassword = () => {
           <StyledLink to="/login">Back to Login</StyledLink>
         </ActionBtns>
       </ForgotPasswordForm>
+
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={3000}
+        onClose={handleSnackbarClose}
+        message={snackbarMessage}
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+      />
     </PageContainer>
   );
 };

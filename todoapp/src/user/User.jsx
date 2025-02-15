@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import styled from "@emotion/styled";
-import { Button, TextField } from "@mui/material";
+import { Button, TextField, Snackbar } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle"; // Profile Picture Icon
 import { useAuth } from "../context/AuthContext";
+// import PageRedirect from "../utils/PageRedirect";
 
 const UserContainer = styled.div`
   padding: 30px;
@@ -20,34 +20,8 @@ const SectionTitle = styled.h3`
   margin-bottom: 15px;
 `;
 
-const ProfilePictureSection = styled.div`
-  display: flex;
-  align-items: center;
-  margin-bottom: 20px;
-`;
-
-const ProfilePictureIcon = styled(AccountCircleIcon)`
-  font-size: 5em;
-  margin-right: 20px;
-  color: #999;
-`;
-
-const ProfilePictureButtons = styled.div`
-  display: flex;
-  gap: 10px;
-`;
-
 const InputField = styled(TextField)`
   margin-bottom: 20px;
-`;
-
-const UsernameSection = styled.div`
-  margin-bottom: 20px;
-`;
-
-const AvailableChangeText = styled.p`
-  font-size: 0.8em;
-  color: #777;
 `;
 
 const ActionButtons = styled.div`
@@ -84,15 +58,20 @@ const ButtonStyled = styled(Button)`
 
 const User = () => {
   const navigate = useNavigate();
-  const { logout, user } = useAuth();
+  const { logout, user, updatePassword } = useAuth();
 
-  const [email] = useState(user.email); // Set initial value from user context
-  const [username, setUsername] = useState(user.name); // Set initial value
+  const [email] = useState(user?.email || ""); // Set initial value from user context
+  const [username, setUsername] = useState(user?.name || ""); // Set initial value
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
 
   // Optional effect to set username if user changes
   useEffect(() => {
-    setUsername(user.name);
-  }, [user.name]);
+    setUsername(user?.name || "");
+  }, [user]);
 
   const handleInputChange = (e) => {
     setUsername(e.target.value); // Directly update username
@@ -103,57 +82,98 @@ const User = () => {
     alert("Changes saved (not really, this is a demo)");
   };
 
-  const handleDeleteAccount = () => {
-    // Implement your delete account logic here (e.g., API call)
-    alert("Account deleted (not really, this is a demo)");
-    handleLogout();
-    navigate("/login");
+  // const handleDeleteAccount = () => {
+  //   alert("Account deleted (not really, this is a demo)");
+  //   handleLogout();
+  //   navigate("/login");
+  // };
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      setSnackbarMessage("Logged out successfully!"); // Set the snackbar message
+      setSnackbarOpen(true); // Open the snackbar
+      navigate("/login");
+    } catch (error) {
+      console.error("Logout error:", error);
+      alert("Failed to log out.");
+    }
   };
 
-  const handleLogout = () => {
-    logout();
-    navigate("/login");
+  const handleUpdatePassword = async () => {
+    try {
+      await updatePassword(currentPassword, newPassword);
+      setSnackbarMessage("Password updated successfully!");
+      setSnackbarOpen(true);
+      setCurrentPassword("");
+      setNewPassword("");
+    } catch (error) {
+      console.error("Update password error:", error);
+      setSnackbarMessage("Password update failed. Try again!");
+      setSnackbarOpen(true);
+      setCurrentPassword("");
+      setNewPassword("");
+    }
+  };
+
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
   };
 
   return (
     <UserContainer>
-      <SectionTitle>Profile Picture</SectionTitle>
-      <ProfilePictureSection>
-        <ProfilePictureIcon />
-        <ProfilePictureButtons>
-          <Button variant="contained">Change Picture</Button>
-          <Button variant="outlined">Delete Picture</Button>
-        </ProfilePictureButtons>
-      </ProfilePictureSection>
-
+      {/* <PageRedirect /> */}
       <SectionTitle>Email</SectionTitle>
       <InputField disabled fullWidth label="Email" value={email} />
 
       <SectionTitle>Username</SectionTitle>
-      <UsernameSection>
-        <InputField
-          fullWidth
-          label="Username"
-          value={username}
-          onChange={handleInputChange}
-        />
-        <AvailableChangeText>
-          Available change in {new Date("2024-04-25").toLocaleDateString()}{" "}
-          {/* Example date */}
-        </AvailableChangeText>
-      </UsernameSection>
+      <InputField
+        fullWidth
+        label="Username"
+        value={username}
+        onChange={handleInputChange}
+      />
+
+      <SectionTitle>Update Password</SectionTitle>
+      <InputField
+        fullWidth
+        label="Current Password"
+        type="password"
+        value={currentPassword}
+        onChange={(e) => setCurrentPassword(e.target.value)}
+      />
+      <InputField
+        fullWidth
+        label="New Password"
+        type="password"
+        value={newPassword}
+        onChange={(e) => setNewPassword(e.target.value)}
+      />
 
       <ActionButtons>
         <SaveChangesButton variant="contained" onClick={handleSaveChanges}>
           Save Changes
         </SaveChangesButton>
+
+        <ButtonStyled variant="contained" onClick={handleUpdatePassword}>
+          Update Password
+        </ButtonStyled>
         <ButtonStyled variant="contained" onClick={handleLogout}>
           Logout
         </ButtonStyled>
-        <ButtonStyled variant="contained" onClick={handleDeleteAccount}>
+        {/* <ButtonStyled variant="contained" onClick={handleDeleteAccount}>
           Delete Account
-        </ButtonStyled>
+        </ButtonStyled> */}
       </ActionButtons>
+
+      {/* Snackbar for feedback */}
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={3000}
+        onClose={handleSnackbarClose}
+        message={snackbarMessage}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+      />
     </UserContainer>
   );
 };

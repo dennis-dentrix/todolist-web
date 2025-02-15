@@ -1,43 +1,14 @@
 /* eslint-disable react/prop-types */
 import { useState } from "react";
-import styled from "@emotion/styled";
-import { TextField, Button } from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
+import { TextField } from "@mui/material";
 import { useTasks } from "../context/TaskContext"; // Import the useTasks hook
-
-const NewTaskContainer = styled.div`
-  position: fixed;
-  top: 0;
-  right: 0;
-  width: 400px;
-  height: 100%;
-  background-color: #fff;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  z-index: 1000;
-  padding: 20px;
-  overflow-y: auto;
-  border-left: 1px solid #ddd;
-`;
-
-const NewTaskForm = styled.form`
-  display: flex;
-  flex-direction: column;
-`;
-
-const ButtonStyled = styled(Button)`
-  margin-top: 1rem;
-`;
-
-const CloseButton = styled(CloseIcon)`
-  cursor: pointer;
-  position: absolute;
-  top: 10px;
-  right: 10px;
-`;
-
-const ErrorMessage = styled.p`
-  color: red;
-`;
+import {
+  ButtonStyled,
+  CloseButton,
+  ErrorMessage,
+  TaskForm,
+  TaskFormContainer,
+} from "../styles/Styles";
 
 const NewTask = ({ onClose }) => {
   const [title, setTitle] = useState("");
@@ -81,11 +52,11 @@ const NewTask = ({ onClose }) => {
   };
 
   return (
-    <NewTaskContainer>
+    <TaskFormContainer>
       <CloseButton onClick={onClose} />
       <h2>Add New Task</h2>
       {error && <ErrorMessage>{error}</ErrorMessage>}
-      <NewTaskForm onSubmit={handleSubmit}>
+      <TaskForm onSubmit={handleSubmit}>
         <TextField
           label="Title"
           variant="outlined"
@@ -125,8 +96,8 @@ const NewTask = ({ onClose }) => {
         <ButtonStyled type="submit" variant="contained" color="primary">
           Add Task
         </ButtonStyled>
-      </NewTaskForm>
-    </NewTaskContainer>
+      </TaskForm>
+    </TaskFormContainer>
   );
 };
 

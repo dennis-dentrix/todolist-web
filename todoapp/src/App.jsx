@@ -14,12 +14,13 @@ import NewTask from "./components/NewTask";
 import ForgotPassword from "./user/Forgotpassword";
 import ResetPassword from "./user/ResetPassword";
 import { AuthProvider } from "./context/AuthContext";
-import ProtectedRoute from "./ProtectedRoute";
+import ProtectedRoute from "./utils/ProtectedRoute";
 import AppLayout from "./components/Applayout";
 import { AppContainer, Content } from "./styles/Styles";
 import User from "./user/User";
 import Home from "./components/Home";
 import { TaskProvider } from "./context/TaskContext";
+import ResetPasswordPage from "./user/ResetPasswordPage";
 
 // const initialTasks = [
 //   {
@@ -85,6 +86,10 @@ const App = () => {
                 />
                 <Route path="/forgotpassword" element={<ForgotPassword />} />
                 <Route path="/resetpassword" element={<ResetPassword />} />
+                <Route
+                  path="/resetpassword/:token"
+                  element={<ResetPasswordPage />}
+                />
 
                 {/* Protected Routes */}
                 <Route

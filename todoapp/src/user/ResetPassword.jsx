@@ -1,6 +1,8 @@
 import { useState } from "react";
 import styled from "@emotion/styled";
 import { useNavigate, useParams } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import { StyledLink } from "../styles/Styles";
 
 const PageContainer = styled.div`
   display: flex;
@@ -52,37 +54,51 @@ const Input = styled.input`
 
 const Button = styled.button`
   background-color: #007bff;
-  color: white;
-  padding: 12px 20px;
   border: none;
+  -webkit-text-decoration: none;
+  text-decoration: none;
+  color: #fff;
+  font-weight: 500;
+  display: block;
+  padding: 12px 20px;
   border-radius: 6px;
-  cursor: pointer;
+  text-align: center;
   font-size: 1em;
+  -webkit-transition: background-color 0.3s;
+  transition: background-color 0.3s;
+  width: 100%;
 
   &:hover {
     background-color: #0056b3;
   }
 `;
 
+const ActionButtons = styled.div`
+  padding: 1.3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+`;
+
 const ResetPassword = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  // eslint-disable-next-line no-unused-vars
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
-  const { token } = useParams(); // Access the token from the URL
+  const { resetPassword, error } = useAuth();
+  const { token } = useParams();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (password !== confirmPassword) {
-      setMessage("Passwords do not match");
-      return;
-    }
+    e.preventDefault();
+    await resetPassword(token, password, confirmPassword);
 
-    // Implement your password reset logic here (e.g., API call)
-    console.log("Reset password submitted", { password, token });
-    setMessage("Password reset successfully (not really, this is a demo)");
-    // For demonstration, let's navigate to the login page after a successful reset
+    // If reset is successful and no error is set, navigate to login or home
+    if (!error) {
+      navigate("/login"); // Redirect to login page after successful reset
+    }
     setTimeout(() => {
       navigate("/login");
     }, 2000); // Redirect after 2 seconds
@@ -109,7 +125,10 @@ const ResetPassword = () => {
           onChange={(e) => setConfirmPassword(e.target.value)}
           required
         />
-        <Button type="submit">Reset Password</Button>
+        <ActionButtons>
+          <Button type="submit">Reset Password</Button>
+          <StyledLink type="submit">Back To login</StyledLink>
+        </ActionButtons>
       </ResetPasswordForm>
     </PageContainer>
   );

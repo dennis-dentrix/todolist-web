@@ -1,6 +1,5 @@
 /* eslint-disable react/prop-types */
 import { useState } from "react";
-import styled from "@emotion/styled";
 import {
   TextField,
   Button,
@@ -11,74 +10,16 @@ import {
   DialogContentText,
   DialogTitle,
 } from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditNoteIcon from "@mui/icons-material/EditNote";
 import { useTasks } from "../context/TaskContext"; // Import the useTasks hook
-
-const EditTaskContainer = styled.div`
-  position: fixed;
-  top: 0;
-  right: 0;
-  width: 400px;
-  height: 100%;
-  background-color: #fff;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  z-index: 1000;
-  padding: 20px;
-  overflow-y: auto;
-  border-left: 1px solid #ddd;
-`;
-
-const EditTaskFormStyled = styled.form`
-  display: flex;
-  flex-direction: column;
-`;
-
-const ActionButtons = styled.div`
-  padding-top: 1.3rem;
-  display: flex;
-  justify-content: space-between;
-`;
-
-const UpdateButton = styled(Button)`
-  background-color: #007bff;
-  color: white;
-  padding: 0.5rem 1rem;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 0.2rem;
-
-  &:hover {
-    background-color: #0056b3;
-  }
-`;
-
-const CloseButton = styled(CloseIcon)`
-  cursor: pointer;
-  position: absolute;
-  top: 10px;
-  right: 40px;
-`;
-
-const DeleteButton = styled(Button)`
-  background-color: #e57373;
-  color: white;
-  padding: 0.5rem 1rem;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 0.2rem;
-
-  &:hover {
-    background-color: #c62828; /* Darker red on hover */
-  }
-`;
+import {
+  ActionButtons,
+  DeleteButton,
+  EditTaskFormStyled,
+  UpdateButton,
+} from "../styles/EditFormComponents";
+import { CloseButton, TaskFormContainer } from "../styles/Styles";
 
 const EditTaskForm = ({ task, onClose }) => {
   const [title, setTitle] = useState(task.title);
@@ -159,7 +100,7 @@ const EditTaskForm = ({ task, onClose }) => {
   };
 
   return (
-    <EditTaskContainer>
+    <TaskFormContainer>
       <CloseButton onClick={onClose} />
       <h2>Edit Task</h2>
       <EditTaskFormStyled onSubmit={handleSubmit}>
@@ -253,7 +194,7 @@ const EditTaskForm = ({ task, onClose }) => {
         message={snackbarMessage}
         anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
       />
-    </EditTaskContainer>
+    </TaskFormContainer>
   );
 };
 

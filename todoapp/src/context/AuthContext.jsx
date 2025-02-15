@@ -9,7 +9,7 @@ import {
   useCallback,
 } from "react";
 import { useNavigate } from "react-router-dom";
-import api from "../httpCommon";
+import api from "../utils/httpCommon";
 
 const AuthContext = createContext();
 
@@ -25,7 +25,7 @@ export const AuthProvider = ({ children }) => {
     setLoading(true);
     try {
       const response = await api.get("/users/current"); // Endpoint to check current user
-      console.log(response.data);
+      // console.log(response.data);
       if (response.status === 200) {
         setUser(response.data.data.user);
         setIsAuthenticated(true);
@@ -52,8 +52,8 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   useEffect(() => {
-    checkAuth(); // Call checkAuth on component mount
-  }, [checkAuth]); // Only re-run if checkAuth changes
+    checkAuth();
+  }, [checkAuth]);
 
   const loginUser = async (email, password) => {
     setLoading(true);
@@ -114,12 +114,15 @@ export const AuthProvider = ({ children }) => {
   const logout = async () => {
     setLoading(true);
     try {
-      await api.post("/users/logout");
+      const response = await api.get("/users/logout");
+      console.log("Logout Response:", response);
+
       setUser(null);
       setIsAuthenticated(false);
       setError(null); // Clear any previous errors
       navigate("/login"); // Redirect to login page after logout
     } catch (err) {
+      console.error("Logout Error:", err.message); // Log the error
       setError(err.response ? err.response.data.message : "Logout failed");
     } finally {
       setLoading(false);
@@ -145,6 +148,39 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const resetPassword = async (token, password, passwordConfirm) => {
+    setLoading(true);
+    try {
+      const response = await api.patch(`/users/resetPassword/${token}`, {
+        password,
+        passwordConfirm,
+      });
+
+      if (response.status === 200) {
+        setUser(response.data.data.user);
+        setIsAuthenticated(true);
+        setError(null);
+        navigate("/");
+      } else {
+        setError("Password reset failed");
+      }
+    } catch (err) {
+      setIsAuthenticated(false);
+      setUser(null);
+
+      // Check if the error is due to an expired token
+      if (err.response && err.response.status === 400) {
+        setError("Token has expired. Please request a new password reset.");
+      } else {
+        setError(
+          err.response ? err.response.data.message : "Password reset failed"
+        );
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -156,6 +192,7 @@ export const AuthProvider = ({ children }) => {
         loading,
         error,
         forgotPassword,
+        resetPassword,
       }}
     >
       {children}{" "}

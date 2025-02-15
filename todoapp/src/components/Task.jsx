@@ -1,10 +1,11 @@
 /* eslint-disable react/prop-types */
-import styled from "@emotion/styled";
+import { styled } from "styled-components";
+import { breakpoints, colors } from "../styles/constants";
 import DeleteIcon from "@mui/icons-material/Delete";
 
 const TaskContainer = styled.div`
-  background-color: #fff;
-  border: 1px solid #ddd;
+  background-color: ${colors.white};
+  border: 1px solid ${colors.border};
   border-radius: 8px;
   padding: 15px;
   margin-bottom: 20px;
@@ -17,42 +18,51 @@ const TaskContainer = styled.div`
     transform: translateY(-3px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
+
+  @media (max-width: ${breakpoints.medium}) {
+    width: 280px;
+  }
 `;
 
 const TaskTitle = styled.h3`
   margin-top: 0;
-  color: #333;
+  color: ${colors.text};
   font-size: 1.1em;
   font-weight: 600;
 `;
 
 const TaskCategory = styled.span`
   font-size: 0.8em;
-  color: #777;
+  color: ${colors.textSecondary};
   margin-left: 10px;
   font-style: italic;
 `;
 
 const TaskDescription = styled.p`
-  color: #555;
+  color: ${colors.textSecondary};
   margin-top: 5px;
   font-size: 0.9em;
   line-height: 1.4;
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: nowrap; /* Prevent wrapping */
+  white-space: nowrap;
 `;
 
 const TaskInfo = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-direction: column;
+
+  @media (min-width: ${breakpoints.medium}) {
+    flex-direction: row;
+  }
 `;
 
 const TaskDueDate = styled.p`
   margin-top: 5px;
   font-size: 0.8em;
-  color: #777;
+  color: ${colors.textSecondary};
   display: flex;
   flex-direction: column;
   gap: 0.2rem;
@@ -61,14 +71,14 @@ const TaskDueDate = styled.p`
 const TaskProgress = styled.p`
   margin-top: 15px;
   font-style: italic;
-  color: #888;
+  color: ${colors.textSecondary};
   font-size: 0.85em;
   display: flex;
   flex-direction: column;
   gap: 0.2rem;
 `;
 
-const DeleteButton = styled(DeleteIcon)`
+const DeleteIconBtn = styled(DeleteIcon)`
   cursor: pointer;
   position: absolute;
   top: 5px;
@@ -76,7 +86,7 @@ const DeleteButton = styled(DeleteIcon)`
   color: #e57373;
 
   &:hover {
-    color: #c62828; /* Darker red on hover */
+    color: #c62828;
   }
 `;
 
@@ -109,7 +119,7 @@ const Task = ({ task, onDelete, onEdit }) => {
       </TaskInfo>
 
       {task.status === "completed" && (
-        <DeleteButton
+        <DeleteIconBtn
           onClick={(e) => {
             e.stopPropagation(); // Prevent card click
             onDelete(task._id);

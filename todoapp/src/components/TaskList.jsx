@@ -1,24 +1,6 @@
 /* eslint-disable react/prop-types */
-import styled from "@emotion/styled";
 import Task from "./Task";
-
-const TaskListContainer = styled.div`
-  display: grid;
-  grid-template-columns: repeat(
-    auto-fill,
-    minmax(300px, 1fr)
-  ); /* Responsive columns */
-  gap: 20px;
-  padding: 20px;
-  justify-content: center; /* Center items horizontally */
-`;
-
-const NoTasksMessage = styled.p`
-  text-align: center;
-  color: #777;
-  font-style: italic;
-  padding: 20px;
-`;
+import { TaskListContainer, NoTasksMessage } from "../styles/Styles";
 
 const TaskList = ({ tasks, onUpdateProgress, onDelete, onEdit }) => {
   // console.log(tasks);

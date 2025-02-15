@@ -2,12 +2,20 @@
 import { useState } from "react";
 import styled from "@emotion/styled";
 import TaskList from "./TaskList";
-// import EditTaskForm from "./EditTaskForm";
 import { useTasks } from "../context/TaskContext"; // Import the useTasks hook
+import Loader from "./Loader";
 import EditTaskForm from "./EditTaskForm";
+import { breakpoints } from "../styles/constants";
 
 const HomeContainer = styled.div`
-  padding: 20px;
+  padding: 1.2rem 1rem;
+
+  @media (min-width: ${breakpoints.medium}) {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    margin: 0 auto;
+  }
 `;
 
 const TaskSection = styled.div`
@@ -18,7 +26,7 @@ const TaskSection = styled.div`
 const Home = ({ searchTerm }) => {
   const [showEditTaskForm, setShowEditTaskForm] = useState(false);
   const [editFormData, setEditFormData] = useState(null); // Make sure this can handle null
-  const { tasks, deleteTask } = useTasks();
+  const { tasks, deleteTask, loading } = useTasks();
 
   const handleEditTask = (task) => {
     setEditFormData(task); // Set the data for the edit form
@@ -45,6 +53,7 @@ const Home = ({ searchTerm }) => {
       .includes(searchTerm.toLowerCase())
   );
 
+  if (loading) return <Loader />;
   return (
     <HomeContainer>
       <TaskSection>

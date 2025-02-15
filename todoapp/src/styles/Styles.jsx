@@ -1,31 +1,47 @@
 import styled from "@emotion/styled";
-import { Link } from "react-router";
-import SearchIcon from "@mui/icons-material/Search";
+import { Link } from "react-router-dom"; // Corrected import
+import CloseIcon from "@mui/icons-material/Close";
+import { breakpoints, colors } from "./constants";
 
 export const PageContainer = styled.div`
   display: flex;
-  flex-direction: column; /* Stack items vertically */
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background-color: #f8f8f8;
-  text-align: center; /* Center content horizontally */
+  background-color: ${colors.background};
+  text-align: center;
+  /* padding: 2rem 3rem; */
+
+  @media (max-width: ${breakpoints.medium}) {
+    padding: 10px;
+  }
 `;
 
 export const SiteName = styled.h1`
-  color: #333;
+  color: ${colors.text};
   margin-bottom: 20px;
-  font-size: 2em;
+  font-size: 2.5em;
+  font-family: "Roboto", sans-serif;
+
+  @media (max-width: ${breakpoints.medium}) {
+    font-size: 2em;
+  }
 `;
 
 export const LoginForm = styled.form`
   margin: 20px auto;
   padding: 30px;
   max-width: 400px;
-  background-color: #fff;
-  border: 1px solid #ddd;
+  background-color: ${colors.white};
+  border: 1px solid ${colors.border};
   border-radius: 8px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+
+  @media (max-width: ${breakpoints.small}) {
+    padding: 20px;
+    max-width: 90%;
+  }
 `;
 
 export const Input = styled.input`
@@ -35,66 +51,97 @@ export const Input = styled.input`
   margin-bottom: 15px;
   border: none;
   outline: none;
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid ${colors.border};
   font-size: 1em;
 
   &::placeholder {
-    color: #aaa; /* Light color for placeholder text */
-    opacity: 1; /* Ensure placeholder is visible */
+    color: ${colors.textSecondary};
+    opacity: 1;
   }
 
   &:focus {
-    border-color: #007bff; /* Highlight border on focus */
-    box-shadow: none; /* Remove default shadow */
-    outline: none; /* Remove default outline */
+    border-color: ${colors.primary};
+    box-shadow: none;
+    outline: none;
   }
 `;
 
 export const ActionBtns = styled.div`
   padding-top: 2rem;
   display: flex;
+  flex-direction: column;
+  gap: 1rem;
   justify-content: space-between;
+
+  @media (max-width: ${breakpoints.small}) {
+    flex-direction: column;
+    align-items: center;
+    gap: 10px; /* Add gap between buttons on small screens */
+  }
 `;
 
 export const Button = styled.button`
-  background-color: #007bff;
-  color: white;
+  background-color: ${colors.primary};
+  color: ${colors.white};
   padding: 12px 20px;
   border: none;
   border-radius: 6px;
   cursor: pointer;
   font-size: 1em;
+  transition: background-color 0.3s;
 
   &:hover {
-    background-color: #0056b3;
+    background-color: ${colors.hover};
+  }
+`;
+
+export const ButtonStyled = styled.button`
+  background-color: ${colors.primary};
+  color: ${colors.white};
+  padding: 12px 20px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1em;
+  transition: background-color 0.3s;
+  width: max-content;
+
+  &:hover {
+    background-color: ${colors.hover};
+  }
+
+  @media (max-width: ${breakpoints.small}) {
+    width: 100%;
   }
 `;
 
 export const StyledLink = styled(Link)`
-  background-color: #6c757d;
+  background-color: ${colors.secondary};
   text-decoration: none;
-  color: white;
+  color: ${colors.white};
   font-weight: 500;
   display: block;
   padding: 12px 20px;
   border-radius: 6px;
   text-align: center;
   font-size: 1em;
+  transition: background-color 0.3s;
 
   &:hover {
-    background-color: #5a6268;
+    background-color: ${colors.hoverSecondary};
   }
 `;
 
 export const Title = styled.h2`
   text-align: center;
   margin-bottom: 20px;
-  color: #333;
+  color: ${colors.text};
+  font-family: "Roboto", sans-serif;
 `;
 
 export const Description = styled.p`
   text-align: center;
-  color: #777;
+  color: ${colors.textSecondary};
   margin-bottom: 25px;
   font-size: 0.9em;
 `;
@@ -103,20 +150,26 @@ export const SignupForm = styled.form`
   margin: 20px auto;
   padding: 30px;
   max-width: 400px;
-  background-color: #fff;
-  border: 1px solid #ddd;
+  background-color: ${colors.white};
+  border: 1px solid ${colors.border};
   border-radius: 8px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+
+  @media (max-width: ${breakpoints.small}) {
+    padding: 20px;
+    max-width: 90%;
+  }
 `;
 
 export const SignupButton = styled.button`
   background-color: #28a745;
-  color: white;
+  color: ${colors.white};
   padding: 12px 20px;
   border: none;
   border-radius: 6px;
   cursor: pointer;
   font-size: 1em;
+  transition: background-color 0.3s;
 
   &:hover {
     background-color: #218838;
@@ -124,146 +177,60 @@ export const SignupButton = styled.button`
 `;
 
 export const StyledLinklogin = styled(Link)`
-  background-color: #6c757d;
+  background-color: ${colors.secondary};
   text-decoration: none;
-  color: white;
+  color: ${colors.white};
   font-weight: 500;
   display: block;
   padding: 12px 20px;
   border-radius: 6px;
   text-align: center;
   font-size: 1em;
+  transition: background-color 0.3s;
 
   &:hover {
-    background-color: #5a6268;
+    background-color: ${colors.hoverSecondary};
   }
 `;
 
 export const AppContainer = styled.div`
-  /* max-width: 1200px; */
   margin: 0 auto;
   padding: 0;
   display: flex;
   min-height: 100vh;
-`;
-
-export const Sidebar = styled.div`
-  width: 150px;
-  background-color: #f0f0f0;
-  padding: 10px;
-  border-right: 1px solid #ccc;
-  display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: space-between; /* Distribute space */
+  z-index: 1;
+
+  @media (min-width: ${breakpoints.medium}) {
+    flex-direction: column; /* Keep column layout for larger screens */
+  }
 `;
 
 export const Content = styled.div`
   flex: 1;
-  padding: 20px;
+  padding: 1.2rem 1rem;
 `;
 
 export const NavList = styled.ul`
   list-style: none;
   padding: 0;
-  margin: 0; /* remove default */
-  width: 100%;
+  margin: 0;
   display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  text-align: center;
+  flex-direction: row;
+  justify-content: space-around;
+  width: 100%;
+
+  @media (max-width: ${breakpoints.medium}) {
+    flex-direction: column;
+    align-items: center;
+  }
 `;
 
 export const NavItem = styled.li`
   margin-bottom: 10px;
-`;
 
-// export const StyledLink = styled(Link)`
-//   text-decoration: none;
-//   color: #333;
-//   font-weight: 500;
-//   display: block;
-//   padding: 8px 12px;
-//   border-radius: 5px;
-//   text-align: center; /* Center the icons */
-
-//   &:hover {
-//     background-color: #ddd;
-//   }
-// `;
-
-export const Navbar = styled.div`
-  background-color: #f8f8f8;
-  padding: 10px 20px;
-  border-bottom: 1px solid #ddd;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-`;
-
-// export const Title = styled.h2`
-//   margin: 0;
-// `;
-
-export const SearchContainer = styled.div`
-  display: flex;
-  justify-self: center;
-  position: relative;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  width: 30%;
-  &:focus-within {
-    border: 1px solid #ccc;
-    outline: none;
-    box-shadow: none;
-  }
-`;
-
-export const SearchBox = styled.input`
-  width: 100%;
-  padding: 10px 35px 10px 10px;
-  border: none;
-  border-radius: 4px;
-  outline: none;
-  &:focus {
-    outline: none;
-    box-shadow: none;
-  }
-`;
-
-export const SearchIconWrapper = styled(SearchIcon)`
-  position: absolute;
-  top: 50%;
-  right: 10px;
-  transform: translateY(-50%);
-  color: #777;
-`;
-
-export const ButtonStyled = styled(Button)`
-  && {
-    background-color: #007bff;
-    color: white;
-    padding: 12px 20px;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 1em;
-
-    &:hover {
-      background-color: #0056b3;
-    }
-  }
-`;
-
-export const ProfileIconLink = styled(Link)`
-  text-decoration: none;
-  color: #333;
-  display: block;
-  padding: 8px 12px;
-  border-radius: 50%; /* Make it circular */
-  text-align: center;
-  &:hover {
-    background-color: #ddd;
+  @media (max-width: ${breakpoints.medium}) {
+    margin-bottom: 0;
   }
 `;
 
@@ -274,14 +241,68 @@ export const ErrorMessage = styled.p`
 
 export const ForgotPasswordLink = styled(Link)`
   text-decoration: none;
-  color: #007bff; /* Standard blue link color */
+  color: ${colors.primary};
   font-size: 0.9em;
-  margin-bottom: 15px; /* Match spacing of input fields */
-  display: block; /* Ensure it takes up full width and sits on its own line */
-  text-align: right; /* Align to the right */
+  margin-bottom: 15px;
+  display: block;
+  text-align: right;
 
   &:hover {
     text-decoration: underline;
-    color: #0056b3; /* Darker blue on hover */
+    color: ${colors.hover};
   }
+`;
+
+export const CloseButton = styled(CloseIcon)`
+  cursor: pointer;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+`;
+
+export const TaskFormContainer = styled.div`
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 400px;
+  height: 100%;
+  background-color: ${colors.white};
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  padding: 20px;
+  overflow-y: auto;
+  border-left: 1px solid ${colors.border};
+
+  @media (max-width: ${breakpoints.medium}) {
+    width: 100%;
+    position: static;
+    height: auto;
+    box-shadow: none;
+    border-left: none;
+    z-index: 1000;
+  }
+`;
+
+export const TaskForm = styled.form`
+  display: flex;
+  flex-direction: column;
+`;
+
+export const TaskListContainer = styled.div`
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  padding: 20px;
+  justify-content: center;
+
+  @media (max-width: ${breakpoints.small}) {
+    grid-template-columns: 1fr;
+  }
+`;
+
+export const NoTasksMessage = styled.p`
+  text-align: center;
+  color: ${colors.textSecondary};
+  font-style: italic;
+  padding: 20px;
 `;

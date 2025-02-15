@@ -2,7 +2,7 @@
 /* eslint-disable react-refresh/only-export-components */
 import { createContext, useState, useEffect, useContext } from "react";
 import { useAuth } from "./AuthContext";
-import api from "../httpCommon";
+import api from "../utils/httpCommon";
 
 const TaskContext = createContext();
 
@@ -73,7 +73,7 @@ const TaskProvider = ({ children }) => {
 
   const updateTask = async (updatedTask) => {
     try {
-      console.log("Updating task with ID:", updatedTask._id); // Debugging log
+      // console.log("Updating task with ID:", updatedTask._id);
       const response = await api.patch(
         `/list/${updatedTask._id}`,
         updatedTask,
