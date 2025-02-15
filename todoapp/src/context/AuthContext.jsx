@@ -25,22 +25,20 @@ export const AuthProvider = ({ children }) => {
     setLoading(true);
     try {
       const response = await api.get("/users/current"); // Endpoint to check current user
-      // console.log(response.data);
       if (response.status === 200) {
         setUser(response.data.data.user);
         setIsAuthenticated(true);
+        setError(null); // Clear any previous errors
       } else {
-        setIsAuthenticated(false);
-        setUser(null);
+        throw new Error("Failed to authenticate");
       }
-      setError(null); // Clear any previous errors
     } catch (err) {
       setIsAuthenticated(false);
       setUser(null);
       setError(
         err.response ? err.response.data.message : "Failed to authenticate"
       );
-      //Clear Cookies
+      // Clear Cookies
       document.cookie.split(";").forEach((c) => {
         document.cookie = c
           .replace(/^ +/, "")

@@ -296,7 +296,7 @@ export const TaskListContainer = styled.div`
   justify-content: center;
 
   @media (max-width: ${breakpoints.small}) {
-    grid-template-columns: 1fr;
+    /* grid-template-columns: 1fr; */
   }
 `;
 

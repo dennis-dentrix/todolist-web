@@ -22,23 +22,6 @@ import Home from "./components/Home";
 import { TaskProvider } from "./context/TaskContext";
 import ResetPasswordPage from "./user/ResetPasswordPage";
 
-// const initialTasks = [
-//   {
-//     id: 1,
-//     title: "Learn React",
-//     category: "Development",
-//     description: "Go through the React tutorial",
-//     progress: "Incomplete",
-//   },
-//   {
-//     id: 2,
-//     title: "Grocery Shopping",
-//     category: "Personal",
-//     description: "Buy groceries for the week",
-//     progress: "Complete",
-//   },
-// ];
-
 const App = () => {
   const [showNewTaskForm, setShowNewTaskForm] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
@@ -52,14 +35,6 @@ const App = () => {
     // Set login status in local storage whenever it changes
     localStorage.setItem("isLoggedIn", String(isLoggedIn)); // Ensure boolean is stored as a string
   }, [isLoggedIn]);
-
-  // const handleAddTask = (newTask) => {
-  //   setTasks((prevTasks) => [
-  //     ...prevTasks,
-  //     { ...newTask, id: prevTasks.length + 1 },
-  //   ]);
-  //   setShowNewTaskForm(false);
-  // };
 
   return (
     <Router>

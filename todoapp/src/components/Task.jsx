@@ -19,8 +19,8 @@ const TaskContainer = styled.div`
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
 
-  @media (max-width: ${breakpoints.medium}) {
-    width: 280px;
+  @media (max-width: ${breakpoints.small}) {
+    width: 150px;
   }
 `;
 

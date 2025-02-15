@@ -16,6 +16,13 @@ const HomeContainer = styled.div`
     gap: 20px;
     margin: 0 auto;
   }
+
+  @media (min-width: ${breakpoints.small}) {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin: 0 auto;
+  }
 `;
 
 const TaskSection = styled.div`
