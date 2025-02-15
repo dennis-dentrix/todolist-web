@@ -19,29 +19,29 @@ import AppLayout from "./components/Applayout";
 import { AppContainer, Content } from "./styles/Styles";
 import User from "./user/User";
 import Home from "./components/Home";
+import { TaskProvider } from "./context/TaskContext";
 
-const initialTasks = [
-  {
-    id: 1,
-    title: "Learn React",
-    category: "Development",
-    description: "Go through the React tutorial",
-    progress: "Incomplete",
-  },
-  {
-    id: 2,
-    title: "Grocery Shopping",
-    category: "Personal",
-    description: "Buy groceries for the week",
-    progress: "Complete",
-  },
-];
+// const initialTasks = [
+//   {
+//     id: 1,
+//     title: "Learn React",
+//     category: "Development",
+//     description: "Go through the React tutorial",
+//     progress: "Incomplete",
+//   },
+//   {
+//     id: 2,
+//     title: "Grocery Shopping",
+//     category: "Personal",
+//     description: "Buy groceries for the week",
+//     progress: "Complete",
+//   },
+// ];
 
 const App = () => {
   const [showNewTaskForm, setShowNewTaskForm] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const [tasks, setTasks] = useState(initialTasks); // Initialize with initialTasks
-
+  // const [tasks, setTasks] = useState(initialTasks);
   const [isLoggedIn, setIsLoggedIn] = useState(() => {
     // Get login status from local storage on initial load
     return localStorage.getItem("isLoggedIn") === "true";
@@ -52,78 +52,80 @@ const App = () => {
     localStorage.setItem("isLoggedIn", String(isLoggedIn)); // Ensure boolean is stored as a string
   }, [isLoggedIn]);
 
-  const handleAddTask = (newTask) => {
-    setTasks((prevTasks) => [
-      ...prevTasks,
-      { ...newTask, id: prevTasks.length + 1 },
-    ]); // Use functional update
-    setShowNewTaskForm(false);
-  };
+  // const handleAddTask = (newTask) => {
+  //   setTasks((prevTasks) => [
+  //     ...prevTasks,
+  //     { ...newTask, id: prevTasks.length + 1 },
+  //   ]);
+  //   setShowNewTaskForm(false);
+  // };
 
   return (
-    <AuthProvider>
-      <Router>
-        <GlobalStyles />
-        <AppContainer>
-          {/* {isLoggedIn && ( 
+    <Router>
+      <AuthProvider>
+        <TaskProvider>
+          <GlobalStyles />
+          <AppContainer>
+            {/* {isLoggedIn && ( 
           )} */}
-          {/* <ProtectedRoute>
+            {/* <ProtectedRoute>
             <SidebarComp setShowNewTaskForm={setShowNewTaskForm} />
           </ProtectedRoute> */}
-          <Content>
-            {/* <NavbarComp />  Removed: Not present in code*/}
+            <Content>
+              {/* <NavbarComp />  Removed: Not present in code*/}
 
-            <Routes>
-              <Route
-                path="/login"
-                element={<Login setIsLoggedIn={setIsLoggedIn} />}
-              />
-              <Route
-                path="/signup"
-                element={<Signup setIsLoggedIn={setIsLoggedIn} />}
-              />
-              <Route path="/forgotpassword" element={<ForgotPassword />} />
-              <Route path="/resetpassword" element={<ResetPassword />} />
-
-              {/* Protected Routes */}
-              <Route
-                path="/"
-                element={
-                  <ProtectedRoute>
-                    <AppLayout
-                      tasks={tasks}
-                      setTasks={setTasks}
-                      searchTerm={searchTerm}
-                      setSearchTerm={setSearchTerm}
-                      setShowNewTaskForm={setShowNewTaskForm}
-                    />
-                  </ProtectedRoute>
-                }
-              >
-                {/* Nested Routes */}
+              <Routes>
                 <Route
-                  index
-                  element={
-                    <Home
-                      tasks={tasks}
-                      setTasks={setTasks}
-                      searchTerm={searchTerm}
-                    />
-                  }
+                  path="/login"
+                  element={<Login setIsLoggedIn={setIsLoggedIn} />}
                 />
-                <Route path="user" element={<User />} />
-              </Route>
-            </Routes>
-          </Content>
-          {showNewTaskForm && (
-            <NewTask
-              onClose={() => setShowNewTaskForm(false)}
-              onAddTask={handleAddTask}
-            />
-          )}
-        </AppContainer>
-      </Router>
-    </AuthProvider>
+                <Route
+                  path="/signup"
+                  element={<Signup setIsLoggedIn={setIsLoggedIn} />}
+                />
+                <Route path="/forgotpassword" element={<ForgotPassword />} />
+                <Route path="/resetpassword" element={<ResetPassword />} />
+
+                {/* Protected Routes */}
+                <Route
+                  path="/"
+                  element={
+                    <ProtectedRoute>
+                      <AppLayout
+                        // tasks={tasks}
+                        // setTasks={setTasks}
+                        searchTerm={searchTerm}
+                        setSearchTerm={setSearchTerm}
+                        setShowNewTaskForm={setShowNewTaskForm}
+                      />
+                    </ProtectedRoute>
+                  }
+                >
+                  {/* Nested Routes */}
+                  <Route
+                    index
+                    element={
+                      <Home
+                        // tasks={tasks}
+                        // setTasks={setTasks}
+                        searchTerm={searchTerm}
+                      />
+                    }
+                  />
+                  <Route path="user" element={<User />} />
+                </Route>
+              </Routes>
+            </Content>
+            {showNewTaskForm && (
+              <NewTask
+                onClose={() => setShowNewTaskForm(false)}
+                // onAddTask={handleAddTask}
+              />
+            )}
+          </AppContainer>
+        </TaskProvider>
+      </AuthProvider>
+    </Router>
   );
 };
 

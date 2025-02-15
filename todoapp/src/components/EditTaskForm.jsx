@@ -1,23 +1,32 @@
 /* eslint-disable react/prop-types */
-
 import { useState } from "react";
 import styled from "@emotion/styled";
-import { TextField, Button, Snackbar } from "@mui/material";
+import {
+  TextField,
+  Button,
+  Snackbar,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+} from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditNoteIcon from "@mui/icons-material/EditNote";
+import { useTasks } from "../context/TaskContext"; // Import the useTasks hook
 
 const EditTaskContainer = styled.div`
   position: fixed;
   top: 0;
   right: 0;
-  width: 400px; /* Adjust width as needed */
+  width: 400px;
   height: 100%;
   background-color: #fff;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   z-index: 1000;
   padding: 20px;
-  overflow-y: auto; /* Enable scrolling if content overflows */
+  overflow-y: auto;
   border-left: 1px solid #ddd;
 `;
 
@@ -26,38 +35,25 @@ const EditTaskFormStyled = styled.form`
   flex-direction: column;
 `;
 
-// const Input = styled.input`
-//   width: 100%;
-//   padding: 10px;
-//   margin-bottom: 15px;
-//   border: 1px solid #ddd;
-//   border-radius: 6px;
-//   font-size: 1em;
-//   outline: none;
-// `;
-
 const ActionButtons = styled.div`
   padding-top: 1.3rem;
   display: flex;
   justify-content: space-between;
 `;
 
-const AddButton = styled.button`
-  /* Applying styles to the MUI Button */
+const UpdateButton = styled(Button)`
   background-color: #007bff;
   color: white;
   padding: 0.5rem 1rem;
   border: none;
   border-radius: 6px;
   cursor: pointer;
-  font-size: 1em;
   display: flex;
   align-items: center;
   gap: 0.2rem;
-  && {
-    &:hover {
-      /* background-color: #0056b3; */
-    }
+
+  &:hover {
+    background-color: #0056b3;
   }
 `;
 
@@ -78,25 +74,40 @@ const DeleteButton = styled(Button)`
   display: flex;
   align-items: center;
   gap: 0.2rem;
-  && {
-    /* Applying styles to the MUI Button */
 
-    /* font-size: 1em; */
-
-    &:hover {
-      /* background-color: #0056b3; */
-    }
+  &:hover {
+    background-color: #c62828; /* Darker red on hover */
   }
 `;
 
-const EditTaskForm = ({ task, onUpdate, onClose, onDelete }) => {
+const EditTaskForm = ({ task, onClose }) => {
   const [title, setTitle] = useState(task.title);
   const [category, setCategory] = useState(task.category);
   const [description, setDescription] = useState(task.description);
-  const [dueDate, setDueDate] = useState(task.dueDate || "");
-  const [progress, setProgress] = useState(task.progress);
+  const [dueDate, setDueDate] = useState(() => {
+    // Function to format the date to YYYY-MM-DD
+    if (task.dueDate) {
+      const date = new Date(task.dueDate);
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      return `${year}-${month}-${day}`;
+    }
+    return ""; // Return empty string if no dueDate
+  });
+  const [progress, setProgress] = useState(task.status);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [error, setError] = useState(null);
+  const [confirmOpen, setConfirmOpen] = useState(false); // State for confirmation dialog
+
+  const { updateTask, deleteTask } = useTasks(); // Use TaskContext
+
+  // Centralized snackbar handling
+  const showSnackbar = (message) => {
+    setSnackbarMessage(message);
+    setSnackbarOpen(true);
+  };
 
   const handleSnackbarClose = (event, reason) => {
     if (reason === "clickaway") {
@@ -105,28 +116,46 @@ const EditTaskForm = ({ task, onUpdate, onClose, onDelete }) => {
     setSnackbarOpen(false);
   };
 
-  const handleDelete = (taskId) => {
-    onDelete(taskId);
-    setSnackbarMessage("Task deleted!");
-    setSnackbarOpen(true);
-    onClose();
+  // Confirmation dialog handlers
+  const handleConfirmOpen = () => {
+    setConfirmOpen(true);
   };
 
-  const handleSubmit = (e) => {
+  const handleConfirmClose = () => {
+    setConfirmOpen(false);
+  };
+
+  const handleDelete = async () => {
+    try {
+      await deleteTask(task._id); // Use deleteTask from TaskContext
+      showSnackbar("Task deleted!");
+      onClose(); // Close the form
+    } catch (err) {
+      setError(err.message || "Failed to delete task.");
+      console.error("Error deleting task:", err);
+    } finally {
+      handleConfirmClose(); // Close confirmation dialog
+    }
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Updated task object with form data
-    const updatedTask = {
-      ...task,
-      title,
-      category,
-      description,
-      dueDate,
-      progress,
-    };
-    onUpdate(updatedTask);
-    setSnackbarMessage(`Task "${title}" updated!`);
-    setSnackbarOpen(true);
-    onClose();
+    try {
+      const updatedTask = {
+        ...task,
+        title,
+        category,
+        description,
+        dueDate,
+        status: progress,
+      };
+      await updateTask(updatedTask); // Use updateTask from TaskContext
+      showSnackbar(`Task "${title}" updated!`);
+      onClose(); // Close the form
+    } catch (err) {
+      setError(err.message || "Failed to update task.");
+      console.error("Error updating task:", err);
+    }
   };
 
   return (
@@ -177,16 +206,17 @@ const EditTaskForm = ({ task, onUpdate, onClose, onDelete }) => {
             native: true,
           }}
         >
-          <option value="Incomplete">Incomplete</option>
-          <option value="Complete">Complete</option>
+          <option value="pending">Incomplete</option>
+          <option value="completed">Completed</option>
         </TextField>
+        {error && <p style={{ color: "red" }}>{error}</p>}
         <ActionButtons>
-          <AddButton type="submit" variant="contained">
+          <UpdateButton type="submit" variant="contained">
             <EditNoteIcon />
             Update Task
-          </AddButton>
+          </UpdateButton>
           <DeleteButton
-            onClick={() => handleDelete(task.id, "item deleted")}
+            onClick={handleConfirmOpen} // Open confirmation dialog
             variant="contained"
           >
             <DeleteIcon />
@@ -194,6 +224,28 @@ const EditTaskForm = ({ task, onUpdate, onClose, onDelete }) => {
           </DeleteButton>
         </ActionButtons>
       </EditTaskFormStyled>
+
+      {/* Confirmation Dialog */}
+      <Dialog
+        open={confirmOpen}
+        onClose={handleConfirmClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">{"Confirm Delete"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Are you sure you want to delete this task?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleConfirmClose}>Cancel</Button>
+          <Button onClick={handleDelete} autoFocus>
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
+
       <Snackbar
         open={snackbarOpen}
         autoHideDuration={3000}

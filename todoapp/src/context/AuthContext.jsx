@@ -1,141 +1,149 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react-refresh/only-export-components */
-import { useContext, useReducer } from "react";
-import { createContext } from "react";
+// AuthContext.js
+import {
+  createContext,
+  useState,
+  useEffect,
+  useContext,
+  useCallback,
+} from "react";
+import { useNavigate } from "react-router-dom";
 import api from "../httpCommon";
 
 const AuthContext = createContext();
 
-const initialState = {
-  loading: false,
-  user: null,
-  error: null,
-  isAuthenticated: false,
-};
+export const AuthProvider = ({ children }) => {
+  const navigate = useNavigate();
+  const [user, setUser] = useState(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-function reducer(state, action) {
-  switch (action.type) {
-    case "login":
-      return {
-        ...state,
-        user: action.payload.user,
-        isAuthenticated: true,
-        loading: false,
-        error: null,
-      };
-
-    case "signup":
-      return {
-        ...state,
-        user: action.payload.user,
-        isAuthenticated: true,
-        loading: false,
-        error: null,
-      };
-
-    case "logout":
-      return {
-        ...state,
-        user: null,
-        isAuthenticated: false,
-        loading: false,
-        error: null,
-      };
-
-    case "loading":
-      return { ...state, loading: true, error: null };
-
-    case "error":
-      return { ...state, error: action.payload, loading: false };
-
-    default:
-      throw new Error("Unknown action");
-  }
-}
-
-function AuthProvider({ children }) {
-  const [{ user, isAuthenticated, loading, error }, dispatch] = useReducer(
-    reducer,
-    initialState
-  );
-
-  async function loginUser(email, password) {
-    dispatch({ type: "loading" }); // Set loading state
-
+  // useCallback to prevent unnecessary re-renders and avoid infinite loops
+  const checkAuth = useCallback(async () => {
+    setLoading(true);
     try {
-      const response = await api.post(
-        "/users/login",
-        { email, password },
-        { withCredentials: true }
-      ); // Include credentials for cookie
-      // console.log(response.data);
-      const { user } = response.data.data; // Adjust based on your API response structure
-
-      dispatch({
-        type: "login",
-        payload: { user }, // Dispatch user data
-      });
-    } catch (error) {
-      dispatch({
-        type: "error",
-        payload: error.response ? error.response.data.message : "Login failed", // Handle error message
-      });
-    }
-  }
-
-  async function signup(name, email, password, passwordConfirm) {
-    dispatch({ type: "loading" });
-    try {
-      const response = await api.post(
-        "/users/signup",
-        {
-          email,
-          password,
-          name,
-          passwordConfirm,
-        },
-        { withCredentials: true }
+      const response = await api.get("/users/current"); // Endpoint to check current user
+      console.log(response.data);
+      if (response.status === 200) {
+        setUser(response.data.data.user);
+        setIsAuthenticated(true);
+      } else {
+        setIsAuthenticated(false);
+        setUser(null);
+      }
+      setError(null); // Clear any previous errors
+    } catch (err) {
+      setIsAuthenticated(false);
+      setUser(null);
+      setError(
+        err.response ? err.response.data.message : "Failed to authenticate"
       );
-
-      const { user } = response.data.data;
-      dispatch({
-        type: "signup",
-        payload: { user },
+      //Clear Cookies
+      document.cookie.split(";").forEach((c) => {
+        document.cookie = c
+          .replace(/^ +/, "")
+          .replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
       });
-    } catch (error) {
-      dispatch({
-        type: "error",
-        payload: error.message
-          ? error.response.data.message
-          : "Error creating account. Try again later. ",
-      });
+    } finally {
+      setLoading(false);
     }
-  }
+  }, []);
 
-  async function forgotPassword(email) {
-    dispatch({ type: "loading" });
+  useEffect(() => {
+    checkAuth(); // Call checkAuth on component mount
+  }, [checkAuth]); // Only re-run if checkAuth changes
 
+  const loginUser = async (email, password) => {
+    setLoading(true);
     try {
-      const response = await api.post("/users/forgotPassword", { email });
-      console.log(response);
-
-      dispatch({
-        type: "error",
-        dispatch: null,
-      });
-    } catch (error) {
-      dispatch({
-        type: "error",
-        payload:
-          error.response && error.response.data.message
-            ? error.response.data.message
-            : "Error sending reset email. Try again later.",
-      });
+      const response = await api.post("/users/login", {
+        email,
+        password,
+      }); // Include credentials for cookie
+      if (response.status === 200) {
+        setUser(response.data.data.user);
+        setIsAuthenticated(true);
+        setError(null); // Clear any previous errors
+        navigate("/");
+      } else {
+        setError("Login failed");
+      }
+    } catch (err) {
+      setIsAuthenticated(false);
+      setUser(null);
+      setError(err.response ? err.response.data.message : "Login failed");
+    } finally {
+      setLoading(false);
     }
-  }
-  function logout() {
-    dispatch({ type: "logout" });
-  }
+  };
+
+  const signup = async (name, email, password, passwordConfirm) => {
+    setLoading(true);
+    try {
+      const response = await api.post("/users/signup", {
+        email,
+        password,
+        name,
+        passwordConfirm,
+      });
+
+      if (response.status === 201) {
+        // Assuming 201 is the success status code for signup
+        setUser(response.data.data.user);
+        setIsAuthenticated(true);
+        setError(null); // Clear any previous errors
+        navigate("/"); // Redirect to home page after signup
+      } else {
+        setError("Signup failed"); // Set generic error message
+      }
+    } catch (err) {
+      setIsAuthenticated(false);
+      setUser(null);
+      setError(
+        err.response
+          ? err.response.data.message
+          : "Error creating account. Try again later."
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const logout = async () => {
+    setLoading(true);
+    try {
+      await api.post("/users/logout");
+      setUser(null);
+      setIsAuthenticated(false);
+      setError(null); // Clear any previous errors
+      navigate("/login"); // Redirect to login page after logout
+    } catch (err) {
+      setError(err.response ? err.response.data.message : "Logout failed");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const forgotPassword = async (email) => {
+    setLoading(true);
+    try {
+      await api.post("/users/forgotPassword", {
+        email,
+      });
+      // Handle success (e.g., show a success message to the user)
+      setError(null); // Clear any previous errors
+    } catch (err) {
+      setError(
+        err.response
+          ? err.response.data.message
+          : "Error sending reset email. Try again later."
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <AuthContext.Provider
@@ -150,18 +158,15 @@ function AuthProvider({ children }) {
         forgotPassword,
       }}
     >
-      {children}
+      {children}{" "}
     </AuthContext.Provider>
   );
-}
+};
 
-function useAuth() {
+export const useAuth = () => {
   const context = useContext(AuthContext);
-
-  if (context === undefined)
-    throw new Error("Auth context is used outside the provider");
-
+  if (!context) {
+    throw new Error("useAuth must be used within an AuthProvider");
+  }
   return context;
-}
-
-export { AuthProvider, useAuth };
+};

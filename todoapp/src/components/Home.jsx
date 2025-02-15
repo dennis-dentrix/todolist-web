@@ -1,8 +1,9 @@
 /* eslint-disable react/prop-types */
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import styled from "@emotion/styled";
 import TaskList from "./TaskList";
 // import EditTaskForm from "./EditTaskForm";
+import { useTasks } from "../context/TaskContext"; // Import the useTasks hook
 import EditTaskForm from "./EditTaskForm";
 
 const HomeContainer = styled.div`
@@ -15,69 +16,31 @@ const TaskSection = styled.div`
 `;
 
 const Home = ({ searchTerm }) => {
-  // Receive tasks and setTasks
-  // const [searchTerm, setSearchTerm] = useState(""); // No longer needed here
-  // const [selectedTask, setSelectedTask] = useState(null);
-  //const [showModal, setShowModal] = useState(false); //Unused
-  const [showEditTaskForm, setShowEditTaskForm] = useState(false); // Track edit mode
-  const [editFormData, setEditFormData] = useState({});
-
-  const [tasks, setTasks] = useState([
-    {
-      id: 1,
-      title: "Learn React",
-      category: "Development",
-      description: "Go through the React tutorial",
-      progress: "Incomplete",
-    },
-    {
-      id: 2,
-      title: "Grocery Shopping",
-      category: "Personal",
-      description: "Buy groceries for the week",
-      progress: "Complete",
-    },
-  ]);
-
-  useEffect(() => {
-    // Fetch tasks from API here
-  }, []);
-
-  const handleUpdateProgress = (taskId) => {
-    setTasks(
-      tasks.map((task) =>
-        task.id === taskId ? { ...task, progress: "Complete" } : task
-      )
-    );
-  };
-
-  const handleDeleteTask = (taskId) => {
-    setTasks(tasks.filter((task) => task.id !== taskId));
-  };
+  const [showEditTaskForm, setShowEditTaskForm] = useState(false);
+  const [editFormData, setEditFormData] = useState(null); // Make sure this can handle null
+  const { tasks, deleteTask } = useTasks();
 
   const handleEditTask = (task) => {
-    if (task.progress === "Incomplete") {
-      setEditFormData(task); // Set the data for the edit form
-      setShowEditTaskForm(true); // Show the edit form
-    }
+    setEditFormData(task); // Set the data for the edit form
+    setShowEditTaskForm(true); // Show the edit form
   };
 
   const handleCloseEditForm = () => {
     setShowEditTaskForm(false); // Close the edit form
-    setEditFormData({}); // Clear the form data
+    setEditFormData(null); // Clear the form data
   };
 
-  const handleUpdateTask = (updatedTask) => {
-    // Integrate with backend to save edits
-    const updatedTasks = tasks.map((task) =>
-      task.id === updatedTask.id ? updatedTask : task
-    );
-    setTasks(updatedTasks);
-    handleCloseEditForm();
+  // const handleUpdateTask = async (updatedTask) => {
+  //   await updateTask(updatedTask);
+  //   handleCloseEditForm();
+  // };
+
+  const handleDeleteTask = async (taskId) => {
+    await deleteTask(taskId); // Use deleteTask from TaskContext
   };
 
   const filteredTasks = tasks.filter((task) =>
-    ` ${task.title} ${task.description}`
+    `${task.title} ${task.description} ${task.category}`
       .toLowerCase()
       .includes(searchTerm.toLowerCase())
   );
@@ -87,21 +50,14 @@ const Home = ({ searchTerm }) => {
       <TaskSection>
         <TaskList
           tasks={filteredTasks}
-          onUpdateProgress={handleUpdateProgress}
           onDelete={handleDeleteTask}
           onEdit={handleEditTask}
         />
       </TaskSection>
 
-      {/*Edit Form rendered if task is incomplete*/}
-      {showEditTaskForm && (
-        <EditTaskForm
-          task={editFormData}
-          onUpdate={handleUpdateTask}
-          onClose={handleCloseEditForm}
-          onDelete={handleDeleteTask}
-          // ToastContainer
-        />
+      {/* Edit Form rendered if task is incomplete and editFormData is not null */}
+      {showEditTaskForm && editFormData && (
+        <EditTaskForm task={editFormData} onClose={handleCloseEditForm} />
       )}
     </HomeContainer>
   );

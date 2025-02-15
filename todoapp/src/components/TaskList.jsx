@@ -10,20 +10,33 @@ const TaskListContainer = styled.div`
   ); /* Responsive columns */
   gap: 20px;
   padding: 20px;
+  justify-content: center; /* Center items horizontally */
+`;
+
+const NoTasksMessage = styled.p`
+  text-align: center;
+  color: #777;
+  font-style: italic;
+  padding: 20px;
 `;
 
 const TaskList = ({ tasks, onUpdateProgress, onDelete, onEdit }) => {
+  // console.log(tasks);
   return (
     <TaskListContainer>
-      {tasks.map((task) => (
-        <Task
-          key={task.id}
-          task={task}
-          onUpdateProgress={onUpdateProgress}
-          onDelete={onDelete}
-          onEdit={onEdit} // Pass the onEdit function
-        />
-      ))}
+      {tasks.length === 0 ? (
+        <NoTasksMessage>No tasks available.</NoTasksMessage>
+      ) : (
+        tasks.map((task) => (
+          <Task
+            key={task._id} // Changed from task.id
+            task={task}
+            onUpdateProgress={onUpdateProgress}
+            onDelete={onDelete}
+            onEdit={onEdit} // Pass the onEdit function
+          />
+        ))
+      )}
     </TaskListContainer>
   );
 };
