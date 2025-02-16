@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext"; // Adjust the path as necessary
+import { useAuth } from "../context/useAuth";
 import styled from "styled-components"; // Import styled-components
 import { PageContainer } from "../styles/Styles";
 

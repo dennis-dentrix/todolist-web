@@ -1,7 +1,8 @@
 /* eslint-disable react/prop-types */
-import { useState } from "react";
+// eslint-disable-next-line no-unused-vars
+import React, { useState } from "react";
 import { TextField } from "@mui/material";
-import { useTasks } from "../context/TaskContext"; // Import the useTasks hook
+import { useTasks } from "../context/useTasks";
 import {
   ButtonStyled,
   CloseButton,

@@ -1,5 +1,6 @@
 /* eslint-disable react/prop-types */
-import { useState } from "react";
+// eslint-disable-next-line no-unused-vars
+import React, { useState } from "react";
 import {
   TextField,
   Button,
@@ -12,7 +13,7 @@ import {
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditNoteIcon from "@mui/icons-material/EditNote";
-import { useTasks } from "../context/TaskContext"; // Import the useTasks hook
+import { useTasks } from "../context/useTasks";
 import {
   ActionButtons,
   DeleteButton,

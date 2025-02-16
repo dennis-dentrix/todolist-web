@@ -12,7 +12,7 @@ import {
   Button,
   ForgotPasswordLink,
 } from "../styles/Styles";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../context/useAuth";
 import styled from "styled-components";
 import Loader from "../components/Loader";
 

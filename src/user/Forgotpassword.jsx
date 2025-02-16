@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { styled } from "styled-components";
 import { Link } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
 import { Snackbar } from "@mui/material";
+import { useAuth } from "../context/useAuth";
 
 const PageContainer = styled.div`
   display: flex;

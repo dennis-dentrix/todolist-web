@@ -1,6 +1,7 @@
-/* eslint-disable react/prop-types */
-import { Outlet } from "react-router-dom"; // Import Outlet for nested routing
+/* eslint-disable react/prop-types */ import { Outlet } from "react-router-dom"; // Import Outlet for nested routing
 import NavbarComp from "./NavbarComp";
+// eslint-disable-next-line no-unused-vars
+import React from "react";
 
 function AppLayout({
   searchTerm,

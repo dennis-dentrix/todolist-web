@@ -12,7 +12,7 @@ import {
   StyledLinklogin,
   ErrorMessage,
 } from "../styles/Styles";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../context/useAuth";
 import Loader from "../components/Loader";
 // import VisibilityIcon from "@mui/icons-material/Visibility";
 // import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";

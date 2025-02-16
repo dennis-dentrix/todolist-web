@@ -1,17 +1,11 @@
 /* eslint-disable react/prop-types */
-/* eslint-disable react-refresh/only-export-components */
-// AuthContext.js
-import {
-  createContext,
-  useState,
-  useEffect,
-  useContext,
-  useCallback,
-} from "react";
+
+// eslint-disable-next-line no-unused-vars
+import React from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../utils/httpCommon";
-
-const AuthContext = createContext();
+import { AuthContext } from "./useAuth";
 
 export const AuthProvider = ({ children }) => {
   const navigate = useNavigate();
@@ -196,12 +190,4 @@ export const AuthProvider = ({ children }) => {
       {children}{" "}
     </AuthContext.Provider>
   );
-};
-
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error("useAuth must be used within an AuthProvider");
-  }
-  return context;
 };

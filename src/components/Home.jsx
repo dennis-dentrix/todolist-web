@@ -1,8 +1,9 @@
 /* eslint-disable react/prop-types */
-import { useState } from "react";
+// eslint-disable-next-line no-unused-vars
+import React, { useState } from "react";
 import { styled } from "styled-components";
 import TaskList from "./TaskList";
-import { useTasks } from "../context/TaskContext"; // Import the useTasks hook
+import { useTasks } from "../context/useTasks";
 import Loader from "./Loader";
 import EditTaskForm from "./EditTaskForm";
 import { breakpoints } from "../styles/constants";

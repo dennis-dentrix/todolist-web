@@ -1,12 +1,12 @@
 /* eslint-disable react/prop-types */
-/* eslint-disable react-refresh/only-export-components */
-import { createContext, useState, useEffect, useContext } from "react";
-import { useAuth } from "./AuthContext";
+
+import { useState, useEffect } from "react";
+
 import api from "../utils/httpCommon";
+import { TaskContext } from "./useTasks";
+import { useAuth } from "./useAuth";
 
-const TaskContext = createContext();
-
-const TaskProvider = ({ children }) => {
+export const TaskProvider = ({ children }) => {
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -129,15 +129,3 @@ const TaskProvider = ({ children }) => {
 
   return <TaskContext.Provider value={value}>{children}</TaskContext.Provider>;
 };
-
-function useTasks() {
-  const context = useContext(TaskContext);
-
-  if (context === undefined) {
-    throw new Error("useTask must be used within a TaskProvider");
-  }
-
-  return context;
-}
-
-export { TaskProvider, useTasks };

@@ -1,11 +1,14 @@
 /* eslint-disable react/prop-types */
+// eslint-disable-next-line no-unused-vars
+import React from "react";
+import { Link, useLocation } from "react-router-dom";
+import { styled } from "styled-components";
+// Import useLocation
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import SearchIcon from "@mui/icons-material/Search";
 import EditNoteIcon from "@mui/icons-material/EditNote";
 
-import { styled } from "styled-components";
 import { breakpoints, colors } from "../styles/constants";
-import { Link, useLocation } from "react-router-dom"; // Import useLocation
 
 // STYLED COMPONENTS
 const Navbar = styled.div`
