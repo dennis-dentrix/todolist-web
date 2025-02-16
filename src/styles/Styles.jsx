@@ -1,4 +1,4 @@
-import styled from "@emotion/styled";
+import { styled } from "styled-components";
 import { Link } from "react-router-dom"; // Corrected import
 import CloseIcon from "@mui/icons-material/Close";
 import { breakpoints, colors } from "./constants";

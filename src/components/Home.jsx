@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import { useState } from "react";
-import styled from "@emotion/styled";
+import { styled } from "styled-components";
 import TaskList from "./TaskList";
 import { useTasks } from "../context/TaskContext"; // Import the useTasks hook
 import Loader from "./Loader";

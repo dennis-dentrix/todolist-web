@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import styled from "@emotion/styled";
+import { styled } from "styled-components";
 import { Button, TextField, Snackbar } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";

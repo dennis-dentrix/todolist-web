@@ -1,5 +1,5 @@
 import { useState } from "react";
-import styled from "@emotion/styled";
+import { styled } from "styled-components";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { StyledLink } from "../styles/Styles";
