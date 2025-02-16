@@ -14,6 +14,7 @@ import {
 } from "../styles/Styles";
 import { useAuth } from "../context/useAuth";
 import Loader from "../components/Loader";
+import CustomSnackbar from "../components/CustomSnackBar";
 // import VisibilityIcon from "@mui/icons-material/Visibility";
 // import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 
@@ -43,7 +44,15 @@ import Loader from "../components/Loader";
 
 const Signup = () => {
   const navigate = useNavigate();
-  const { signup, isAuthenticated, loading, error } = useAuth(); // Get error state from context
+  const {
+    signup,
+    isAuthenticated,
+    loading,
+    error,
+    snackbarMessage,
+    snackbarOpen,
+    closeSnackbar,
+  } = useAuth(); // Get error state from context
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -157,10 +166,17 @@ const Signup = () => {
         {apiError && <ErrorMessage>{apiError}</ErrorMessage>}
 
         <ActionBtns>
-          <StyledLinklogin to="/login">Login</StyledLinklogin>
           <SignupButton type="submit">Sign Up</SignupButton>
+          <p>or</p>
+          <StyledLinklogin to="/login">Login</StyledLinklogin>
         </ActionBtns>
       </SignupForm>
+
+      <CustomSnackbar
+        open={snackbarOpen}
+        message={snackbarMessage}
+        onClose={closeSnackbar}
+      />
     </PageContainer>
   );
 };

@@ -23,7 +23,7 @@ export const TaskProvider = ({ children }) => {
       setLoading(true);
       try {
         const response = await api.get("/list", { withCredentials: true });
-        console.log(response);
+        // console.log(response);
         setTasks(response.data.data.list);
       } catch (error) {
         setError(
@@ -46,7 +46,6 @@ export const TaskProvider = ({ children }) => {
         },
       });
 
-      console.log(response);
       if (response.status === 201) {
         setTasks([...tasks, response.data.data.item]); // Update tasks state
         return response.data.data.item;

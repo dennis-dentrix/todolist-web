@@ -15,6 +15,7 @@ import {
 import { useAuth } from "../context/useAuth";
 import styled from "styled-components";
 import Loader from "../components/Loader";
+import CustomSnackbar from "../components/CustomSnackBar";
 
 const ErrorMessage = styled.p`
   color: red;
@@ -28,7 +29,15 @@ const Login = () => {
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
 
-  const { loginUser, isAuthenticated, error, loading } = useAuth();
+  const {
+    loginUser,
+    snackbarOpen,
+    snackbarMessage,
+    closeSnackbar,
+    isAuthenticated,
+    error,
+    loading,
+  } = useAuth();
 
   const navigate = useNavigate();
 
@@ -100,9 +109,15 @@ const Login = () => {
         </ForgotPasswordLink>
         <ActionBtns>
           <Button type="submit">Login</Button>
+          <p>or</p>
           <StyledLink to="/signup">Signup</StyledLink>
         </ActionBtns>
       </LoginForm>
+      <CustomSnackbar
+        open={snackbarOpen}
+        message={snackbarMessage}
+        onClose={closeSnackbar}
+      />
     </PageContainer>
   );
 };

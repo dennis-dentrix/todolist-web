@@ -13,6 +13,17 @@ export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [snackbarOpen, setSnackbarOpen] = useState(false); // Snackbar state
+  const [snackbarMessage, setSnackbarMessage] = useState(""); // Snackbar message
+
+  const showSnackbar = (message) => {
+    setSnackbarMessage(message);
+    setSnackbarOpen(true);
+  };
+
+  const closeSnackbar = () => {
+    setSnackbarOpen(false);
+  };
 
   // useCallback to prevent unnecessary re-renders and avoid infinite loops
   const checkAuth = useCallback(async () => {
@@ -49,23 +60,32 @@ export const AuthProvider = ({ children }) => {
 
   const loginUser = async (email, password) => {
     setLoading(true);
+    setError(null);
     try {
       const response = await api.post("/users/login", {
         email,
         password,
-      }); // Include credentials for cookie
+      });
       if (response.status === 200) {
         setUser(response.data.data.user);
         setIsAuthenticated(true);
-        setError(null); // Clear any previous errors
+        showSnackbar("Login successful!"); // Show success snackbar
         navigate("/");
       } else {
         setError("Login failed");
+        showSnackbar("Login failed. Please try again."); //Show failure snackbar
       }
     } catch (err) {
       setIsAuthenticated(false);
       setUser(null);
-      setError(err.response ? err.response.data.message : "Login failed");
+      if (err.response && err.response.status === 401) {
+        showSnackbar("Incorrect email or password. Please try again."); // Specific message for invalid credentials
+      } else {
+        showSnackbar(
+          "Login failed. Please check your credentials and try again."
+        );
+      }
+      // setError(err.response ? err.response.data.message : "Login failed"); // Removed setError since snackbar is used
     } finally {
       setLoading(false);
     }
@@ -73,6 +93,7 @@ export const AuthProvider = ({ children }) => {
 
   const signup = async (name, email, password, passwordConfirm) => {
     setLoading(true);
+    setError(null);
     try {
       const response = await api.post("/users/signup", {
         email,
@@ -82,22 +103,32 @@ export const AuthProvider = ({ children }) => {
       });
 
       if (response.status === 201) {
-        // Assuming 201 is the success status code for signup
         setUser(response.data.data.user);
         setIsAuthenticated(true);
-        setError(null); // Clear any previous errors
-        navigate("/"); // Redirect to home page after signup
+        showSnackbar("Signup successful!"); // Show success snackbar
+        navigate("/");
       } else {
-        setError("Signup failed"); // Set generic error message
+        setError("Signup failed");
+        showSnackbar("Signup failed. Please try again."); //Show failure snackbar
       }
     } catch (err) {
       setIsAuthenticated(false);
       setUser(null);
-      setError(
-        err.response
-          ? err.response.data.message
-          : "Error creating account. Try again later."
-      );
+      if (
+        err.response &&
+        err.response.status === 400 &&
+        err.response.data.message.includes("already registered")
+      ) {
+        showSnackbar(
+          "An account with this email already exists. Please log in."
+        ); // Specific message for existing account
+        navigate("/login");
+      } else {
+        showSnackbar("Error creating account. Try again later.");
+      }
+      // setError( //Removed setError since snackbar is used
+      // err.response ? err.response.data.message : "Error creating account. Try again later."
+      // );
     } finally {
       setLoading(false);
     }
@@ -106,15 +137,15 @@ export const AuthProvider = ({ children }) => {
   const logout = async () => {
     setLoading(true);
     try {
-      const response = await api.get("/users/logout");
-      console.log("Logout Response:", response);
+      await api.get("/users/logout");
+      // console.log("Logout Response:", response);
 
       setUser(null);
       setIsAuthenticated(false);
       setError(null); // Clear any previous errors
       navigate("/login"); // Redirect to login page after logout
     } catch (err) {
-      console.error("Logout Error:", err.message); // Log the error
+      // console.error("Logout Error:", err.message);
       setError(err.response ? err.response.data.message : "Logout failed");
     } finally {
       setLoading(false);
@@ -185,6 +216,9 @@ export const AuthProvider = ({ children }) => {
         error,
         forgotPassword,
         resetPassword,
+        snackbarOpen,
+        snackbarMessage,
+        closeSnackbar,
       }}
     >
       {children}{" "}

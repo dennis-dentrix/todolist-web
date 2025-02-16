@@ -38,7 +38,7 @@ export const UpdateButton = styled(Button)`
   }
 `;
 
-export const DeleteButton = styled(Button)`
+export const DeleteButton = styled.button`
   ${buttonStyles}
   background-color: #e57373;
 
