@@ -69,6 +69,7 @@ export const AuthProvider = ({ children }) => {
       if (response.status === 200) {
         setUser(response.data.data.user);
         setIsAuthenticated(true);
+        setError(null);
         showSnackbar("Login successful!"); // Show success snackbar
         navigate("/");
       } else {
