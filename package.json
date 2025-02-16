@@ -3,15 +3,11 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "homepage": "https://github.com/dennis-dentrix/todolist-web.git",
   "scripts": {
-    "dev": "vite ",
+    "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview",
-    "clean": "rm -rf dist",
-    "predeploy": "npm run clean && npm run build",
-    "deploy": "node scripts/deploy.cjs"
+    "preview": "vite preview"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
