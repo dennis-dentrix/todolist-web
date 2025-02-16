@@ -6,34 +6,31 @@ function AppLayout({
   searchTerm,
   setSearchTerm,
   setShowNewTaskForm,
+  children, // Added children prop
   // tasks,
   // setTasks,
 }) {
+  if (!children) {
+    console.warn("No children passed to AppLayout!");
+    return null; // Or some fallback UI
+  }
+
   return (
-    <div
-      style={{
-        display: "flex",
-        minHeight: "100vh",
-        boxSizing: "border-box",
-        margin: "0 auto",
-      }}
-    >
-      {/* Sidebar */}
-      {/* <SidebarComp setShowNewTaskForm={setShowNewTaskForm} /> */}
-
-      {/* Main Content Area */}
-      <div style={{ flex: 1 }}>
-        <NavbarComp
-          searchTerm={searchTerm}
-          setSearchTerm={setSearchTerm}
-          setShowNewTaskForm={setShowNewTaskForm}
-        />
-
-        {/* Render the nested routes (Home or User) */}
-        <Outlet />
-      </div>
-    </div>
+    <>
+      <NavbarComp
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
+        setShowNewTaskForm={setShowNewTaskForm}
+      />
+      <Outlet /> {/* Render nested routes */}
+      {children}
+    </>
   );
 }
+
+//Optional: setting children to null using defaultProps
+AppLayout.defaultProps = {
+  children: null,
+};
 
 export default AppLayout;
