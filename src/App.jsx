@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
 import GlobalStyles from "./styles/GlobalStyles";
@@ -19,16 +19,6 @@ import ResetPasswordPage from "./user/ResetPasswordPage";
 const App = () => {
   const [showNewTaskForm, setShowNewTaskForm] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  // const [tasks, setTasks] = useState(initialTasks);
-  const [isLoggedIn, setIsLoggedIn] = useState(() => {
-    // Get login status from local storage on initial load
-    return localStorage.getItem("isLoggedIn") === "true";
-  });
-
-  useEffect(() => {
-    // Set login status in local storage whenever it changes
-    localStorage.setItem("isLoggedIn", String(isLoggedIn)); // Ensure boolean is stored as a string
-  }, [isLoggedIn]);
 
   return (
     <Router>
@@ -40,14 +30,8 @@ const App = () => {
               {/* <NavbarComp />  Removed: Not present in code*/}
 
               <Routes>
-                <Route
-                  path="/login"
-                  element={<Login setIsLoggedIn={setIsLoggedIn} />}
-                />
-                <Route
-                  path="/signup"
-                  element={<Signup setIsLoggedIn={setIsLoggedIn} />}
-                />
+                <Route path="/login" element={<Login />} />
+                <Route path="/signup" element={<Signup />} />
                 <Route path="/forgotpassword" element={<ForgotPassword />} />
                 <Route path="/resetpassword" element={<ResetPassword />} />
                 <Route

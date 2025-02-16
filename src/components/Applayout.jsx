@@ -6,15 +6,10 @@ function AppLayout({
   searchTerm,
   setSearchTerm,
   setShowNewTaskForm,
-  children, // Added children prop
+
   // tasks,
   // setTasks,
 }) {
-  if (!children) {
-    console.warn("No children passed to AppLayout!");
-    return null; // Or some fallback UI
-  }
-
   return (
     <>
       <NavbarComp
@@ -23,7 +18,6 @@ function AppLayout({
         setShowNewTaskForm={setShowNewTaskForm}
       />
       <Outlet /> {/* Render nested routes */}
-      {children}
     </>
   );
 }
