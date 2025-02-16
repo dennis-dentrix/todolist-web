@@ -67,10 +67,10 @@ export const Input = styled.input`
 `;
 
 export const ActionBtns = styled.div`
-  padding-top: 2rem;
+  padding-top: 1rem;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 5px;
   justify-content: space-between;
 
   @media (max-width: ${breakpoints.small}) {
@@ -89,6 +89,7 @@ export const Button = styled.button`
   cursor: pointer;
   font-size: 1em;
   transition: background-color 0.3s;
+  width: 100%;
 
   &:hover {
     background-color: ${colors.hover};
@@ -161,7 +162,7 @@ export const SignupForm = styled.form`
   }
 `;
 
-export const SignupButton = styled.button`
+export const AuthenticateBtn = styled.button`
   background-color: #28a745;
   color: ${colors.white};
   padding: 12px 20px;
@@ -170,26 +171,26 @@ export const SignupButton = styled.button`
   cursor: pointer;
   font-size: 1em;
   transition: background-color 0.3s;
+  width: 100%;
 
   &:hover {
     background-color: #218838;
   }
 `;
 
-export const StyledLinklogin = styled(Link)`
-  background-color: ${colors.secondary};
+export const StyledLinkAlt = styled(Link)`
   text-decoration: none;
   color: ${colors.white};
   font-weight: 500;
   display: block;
-  padding: 12px 20px;
   border-radius: 6px;
   text-align: center;
   font-size: 1em;
-  transition: background-color 0.3s;
+  /* transition: background-color 0.3s; */
+  cursor: pointer;
 
   &:hover {
-    background-color: ${colors.hoverSecondary};
+    /* background-color: ${colors.hoverSecondary}; */
   }
 `;
 

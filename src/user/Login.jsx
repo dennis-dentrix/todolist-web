@@ -8,9 +8,10 @@ import {
   Description,
   Input,
   ActionBtns,
-  StyledLink,
+  StyledLinkAlt,
   Button,
   ForgotPasswordLink,
+  AuthenticateBtn,
 } from "../styles/Styles";
 import { useAuth } from "../context/useAuth";
 import styled from "styled-components";
@@ -108,9 +109,11 @@ const Login = () => {
           Forgot Password?
         </ForgotPasswordLink>
         <ActionBtns>
-          <Button type="submit">Login</Button>
+          <AuthenticateBtn type="submit">Login</AuthenticateBtn>
           <p>or</p>
-          <StyledLink to="/signup">Signup</StyledLink>
+          <Button secondary>
+            <StyledLinkAlt to="/signup">Signup</StyledLinkAlt>
+          </Button>
         </ActionBtns>
       </LoginForm>
       <CustomSnackbar

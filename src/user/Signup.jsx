@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
-  SignupButton,
+  AuthenticateBtn,
   Title,
   Description,
   SiteName,
@@ -9,8 +9,9 @@ import {
   PageContainer,
   SignupForm,
   ActionBtns,
-  StyledLinklogin,
+  StyledLinkAlt,
   ErrorMessage,
+  Button,
 } from "../styles/Styles";
 import { useAuth } from "../context/useAuth";
 import Loader from "../components/Loader";
@@ -166,9 +167,11 @@ const Signup = () => {
         {apiError && <ErrorMessage>{apiError}</ErrorMessage>}
 
         <ActionBtns>
-          <SignupButton type="submit">Sign Up</SignupButton>
+          <AuthenticateBtn type="submit">Sign Up</AuthenticateBtn>
           <p>or</p>
-          <StyledLinklogin to="/login">Login</StyledLinklogin>
+          <Button>
+            <StyledLinkAlt to="/login">Login</StyledLinkAlt>
+          </Button>
         </ActionBtns>
       </SignupForm>
 
