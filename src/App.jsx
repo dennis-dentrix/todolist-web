@@ -14,7 +14,8 @@ import { AppContainer, Content } from "./styles/Styles";
 import User from "./user/User";
 import Home from "./components/Home";
 import { TaskProvider } from "./context/TaskContext";
-import ResetPasswordPage from "./user/ResetPasswordPage";
+// import ResetPasswordPage from "./user/ResetPasswordPage";
+import NotFound from "./components/Notfound";
 
 const App = () => {
   const [showNewTaskForm, setShowNewTaskForm] = useState(false);
@@ -66,6 +67,7 @@ const App = () => {
                     }
                   />
                   <Route path="user" element={<User />} />
+                  <Route path="*" element={<NotFound />} />
                 </Route>
               </Routes>
             </Content>
