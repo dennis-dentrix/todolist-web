@@ -33,10 +33,10 @@ const App = () => {
                 <Route path="/login" element={<Login />} />
                 <Route path="/signup" element={<Signup />} />
                 <Route path="/forgotpassword" element={<ForgotPassword />} />
-                <Route path="/resetpassword" element={<ResetPassword />} />
+                {/* <Route path="/resetpassword" element={<ResetPassword />} /> */}
                 <Route
                   path="/resetpassword/:token"
-                  element={<ResetPasswordPage />}
+                  element={<ResetPassword />}
                 />
 
                 {/* Protected Routes */}
