@@ -42,11 +42,6 @@ const App = () => {
         <TaskProvider>
           <GlobalStyles />
           <AppContainer>
-            {/* {isLoggedIn && ( 
-          )} */}
-            {/* <ProtectedRoute>
-            <SidebarComp setShowNewTaskForm={setShowNewTaskForm} />
-          </ProtectedRoute> */}
             <Content>
               {/* <NavbarComp />  Removed: Not present in code*/}
 
