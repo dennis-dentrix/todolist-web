@@ -157,7 +157,7 @@ const ButtonStyled = styled.button`
 
 const AddButtonMobile = styled.button`
   background-color: transparent;
-  padding: 12px 20px;
+  /* padding: 12px 20px; */
   border: none;
   border-radius: 6px;
   cursor: pointer;
@@ -165,7 +165,13 @@ const AddButtonMobile = styled.button`
   display: none;
 
   &:hover {
-    background-color: ${colors.hover};
+    background-color: transparent;
+    outline: none;
+  }
+
+  &:focus {
+    outline: none;
+    background-color: transparent;
   }
 
   @media (max-width: ${breakpoints.medium}) {

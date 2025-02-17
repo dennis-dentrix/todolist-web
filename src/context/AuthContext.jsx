@@ -205,18 +205,48 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const updatePassword = async (currentPassword, newPassword) => {
+    setLoading(true);
+    setError(null); // Clear any previous errors
+    try {
+      const response = await api.patch("/users/updateMyPassword", {
+        passwordCurrent: currentPassword,
+        password: newPassword,
+        passwordConfirm: newPassword, // Backend usually requires confirmation
+      });
+
+      if (response.status === 200) {
+        setUser(response.data.data.user); // Update user data if needed
+        setError(null); // Clear any previous errors
+        return { success: true, message: "Password updated successfully" };
+      } else {
+        setError("Password update failed");
+        return { success: false, message: "Password update failed" };
+      }
+    } catch (err) {
+      setError(err.response?.data?.message || "Password update failed");
+      return {
+        success: false,
+        message: err.response?.data?.message || "Password update failed",
+      };
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{
         signup,
         loginUser,
         logout,
+        forgotPassword,
+        resetPassword,
+        updatePassword,
         user,
         isAuthenticated,
         loading,
         error,
-        forgotPassword,
-        resetPassword,
         snackbarOpen,
         snackbarMessage,
         closeSnackbar,

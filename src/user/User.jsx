@@ -41,7 +41,7 @@ const SaveChangesButton = styled(Button)`
   && {
     background-color: #6c757d; /* Bootstrap secondary color */
     color: white;
-    padding: 9px 15px;
+    padding: 12px 20px;
     border-radius: 6px;
     flex-grow: 1; /* Allow button to grow and fill available space */
     width: 100%; /* Full width on smaller screens */
@@ -60,7 +60,7 @@ const ButtonStyled = styled(Button)`
   && {
     background-color: #f44336; /* Red color */
     color: white;
-    padding: 9px 15px;
+    padding: 12px 20px;
     border-radius: 6px;
     flex-grow: 1; /* Allow button to grow and fill available space */
     width: 100%; /* Full width on smaller screens */
@@ -74,6 +74,7 @@ const ButtonStyled = styled(Button)`
     }
   }
 `;
+
 const PasswordInput = styled.div`
   display: flex;
   flex-direction: column;
@@ -82,41 +83,31 @@ const PasswordInput = styled.div`
 
 const User = () => {
   const navigate = useNavigate();
-  const { logout, user, updatePassword } = useAuth();
-
-  const [email] = useState(user?.email || ""); // Set initial value from user context
-  const [username, setUsername] = useState(user?.name || ""); // Set initial value
+  const { logout, user, updatePassword, loading } = useAuth();
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [email] = useState(user?.email || "");
+  const [username, setUsername] = useState(user?.name || "");
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
 
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState("");
-
-  // Optional effect to set username if user changes
   useEffect(() => {
     setUsername(user?.name || "");
   }, [user]);
 
   const handleInputChange = (e) => {
-    setUsername(e.target.value); // Directly update username
+    setUsername(e.target.value);
   };
 
   const handleSaveChanges = () => {
-    // Implement your save changes logic here (e.g., API call)
     alert("Changes saved (not really, this is a demo)");
   };
-
-  // const handleDeleteAccount = () => {
-  //   alert("Account deleted (not really, this is a demo)");
-  //   handleLogout();
-  //   navigate("/login");
-  // };
 
   const handleLogout = async () => {
     try {
       await logout();
-      setSnackbarMessage("Logged out successfully!"); // Set the snackbar message
-      setSnackbarOpen(true); // Open the snackbar
+      setSnackbarMessage("Logged out successfully!");
+      setSnackbarOpen(true);
       navigate("/login");
     } catch (error) {
       console.error("Logout error:", error);
@@ -126,17 +117,23 @@ const User = () => {
 
   const handleUpdatePassword = async () => {
     try {
-      await updatePassword(currentPassword, newPassword);
-      setSnackbarMessage("Password updated successfully!");
-      setSnackbarOpen(true);
-      setCurrentPassword("");
-      setNewPassword("");
+      const result = await updatePassword(currentPassword, newPassword);
+
+      if (result.success) {
+        setSnackbarMessage(result.message || "Password updated successfully!");
+        setSnackbarOpen(true);
+        setCurrentPassword("");
+        setNewPassword("");
+      } else {
+        setSnackbarMessage(
+          result.message || "Password update failed. Try again!"
+        );
+        setSnackbarOpen(true);
+      }
     } catch (error) {
       console.error("Update password error:", error);
       setSnackbarMessage("Password update failed. Try again!");
       setSnackbarOpen(true);
-      setCurrentPassword("");
-      setNewPassword("");
     }
   };
 
@@ -146,7 +143,6 @@ const User = () => {
 
   return (
     <UserContainer>
-      {/* <PageRedirect /> */}
       <SectionTitle>Email</SectionTitle>
       <InputField disabled fullWidth label="Email" value={email} />
 
@@ -181,18 +177,18 @@ const User = () => {
           Save Changes
         </SaveChangesButton>
 
-        <ButtonStyled variant="contained" onClick={handleUpdatePassword}>
-          Update Password
+        <ButtonStyled
+          variant="contained"
+          onClick={handleUpdatePassword}
+          disabled={loading} // Disable the button while loading
+        >
+          {loading ? "Updating..." : "Update Password"}
         </ButtonStyled>
         <ButtonStyled variant="contained" onClick={handleLogout}>
           Logout
         </ButtonStyled>
-        {/* <ButtonStyled variant="contained" onClick={handleDeleteAccount}>
-          Delete Account
-        </ButtonStyled> */}
       </ActionButtons>
 
-      {/* Snackbar for feedback */}
       <Snackbar
         open={snackbarOpen}
         autoHideDuration={3000}
