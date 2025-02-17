@@ -3,7 +3,7 @@ import { styled } from "styled-components";
 import { Button, TextField, Snackbar } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/useAuth";
-// import PageRedirect from "../utils/PageRedirect";
+import { breakpoints } from "../styles/constants";
 
 const UserContainer = styled.div`
   padding: 30px;
@@ -27,18 +27,31 @@ const InputField = styled(TextField)`
 const ActionButtons = styled.div`
   padding-top: 1.3rem;
   display: flex;
+  flex-direction: column; /* Stack buttons on smaller screens */
   justify-content: space-between;
+  gap: 1rem; /* Add some spacing between buttons */
+
+  @media (min-width: ${breakpoints.medium}) {
+    flex-direction: row; /* Display buttons in a row on larger screens */
+    align-items: center;
+  }
 `;
 
 const SaveChangesButton = styled(Button)`
   && {
     background-color: #6c757d; /* Bootstrap secondary color */
     color: white;
-    padding: 12px 20px;
+    padding: 9px 15px;
     border-radius: 6px;
+    flex-grow: 1; /* Allow button to grow and fill available space */
+    width: 100%; /* Full width on smaller screens */
 
     &:hover {
       background-color: #5a6268; /* Darker on hover */
+    }
+
+    @media (min-width: ${breakpoints.medium}) {
+      width: auto; /* Reset width on larger screens */
     }
   }
 `;
@@ -47,13 +60,24 @@ const ButtonStyled = styled(Button)`
   && {
     background-color: #f44336; /* Red color */
     color: white;
-    padding: 10px 15px;
-    border-radius: 4px;
+    padding: 9px 15px;
+    border-radius: 6px;
+    flex-grow: 1; /* Allow button to grow and fill available space */
+    width: 100%; /* Full width on smaller screens */
 
     &:hover {
       background-color: #d32f2f; /* Darker red on hover */
     }
+
+    @media (min-width: ${breakpoints.medium}) {
+      width: auto; /* Reset width on larger screens */
+    }
   }
+`;
+const PasswordInput = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 `;
 
 const User = () => {
@@ -135,20 +159,22 @@ const User = () => {
       />
 
       <SectionTitle>Update Password</SectionTitle>
-      <InputField
-        fullWidth
-        label="Current Password"
-        type="password"
-        value={currentPassword}
-        onChange={(e) => setCurrentPassword(e.target.value)}
-      />
-      <InputField
-        fullWidth
-        label="New Password"
-        type="password"
-        value={newPassword}
-        onChange={(e) => setNewPassword(e.target.value)}
-      />
+      <PasswordInput>
+        <InputField
+          fullWidth
+          label="Current Password"
+          type="password"
+          value={currentPassword}
+          onChange={(e) => setCurrentPassword(e.target.value)}
+        />
+        <InputField
+          fullWidth
+          label="New Password"
+          type="password"
+          value={newPassword}
+          onChange={(e) => setNewPassword(e.target.value)}
+        />
+      </PasswordInput>
 
       <ActionButtons>
         <SaveChangesButton variant="contained" onClick={handleSaveChanges}>

@@ -23,11 +23,11 @@ import {
 import { CloseButton, TaskFormContainer } from "../styles/Styles";
 
 const EditTaskForm = ({ task, onClose }) => {
+  const { updateTask, deleteTask } = useTasks(); // Use TaskContext
   const [title, setTitle] = useState(task.title);
   const [category, setCategory] = useState(task.category);
   const [description, setDescription] = useState(task.description);
   const [dueDate, setDueDate] = useState(() => {
-    // Function to format the date to YYYY-MM-DD
     if (task.dueDate) {
       const date = new Date(task.dueDate);
       const year = date.getFullYear();
@@ -35,18 +35,16 @@ const EditTaskForm = ({ task, onClose }) => {
       const day = String(date.getDate()).padStart(2, "0");
       return `${year}-${month}-${day}`;
     }
-    return ""; // Return empty string if no dueDate
+    return "";
   });
   const [progress, setProgress] = useState(task.status);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [error, setError] = useState(null);
-  const [confirmOpen, setConfirmOpen] = useState(false); // State for confirmation dialog
+  const [confirmOpen, setConfirmOpen] = useState(false);
 
-  const { updateTask, deleteTask } = useTasks(); // Use TaskContext
-
-  // Centralized snackbar handling
-  const showSnackbar = (message) => {
+  // Snackbar handling function
+  const handleSnackbar = (message) => {
     setSnackbarMessage(message);
     setSnackbarOpen(true);
   };
@@ -58,7 +56,6 @@ const EditTaskForm = ({ task, onClose }) => {
     setSnackbarOpen(false);
   };
 
-  // Confirmation dialog handlers
   const handleConfirmOpen = () => {
     setConfirmOpen(true);
   };
@@ -69,14 +66,15 @@ const EditTaskForm = ({ task, onClose }) => {
 
   const handleDelete = async () => {
     try {
-      await deleteTask(task._id); // Use deleteTask from TaskContext
-      showSnackbar("Task deleted!");
-      onClose(); // Close the form
+      await deleteTask(task._id);
+      handleSnackbar("Task deleted!");
+      onClose();
     } catch (err) {
       setError(err.message || "Failed to delete task.");
       console.error("Error deleting task:", err);
+      handleSnackbar(err.message || "Failed to delete task.");
     } finally {
-      handleConfirmClose(); // Close confirmation dialog
+      handleConfirmClose();
     }
   };
 
@@ -91,12 +89,13 @@ const EditTaskForm = ({ task, onClose }) => {
         dueDate,
         status: progress,
       };
-      await updateTask(updatedTask); // Use updateTask from TaskContext
-      showSnackbar(`Task "${title}" updated!`);
-      onClose(); // Close the form
+      await updateTask(updatedTask);
+      handleSnackbar(`Task "${title}" updated!`);
+      onClose();
     } catch (err) {
       setError(err.message || "Failed to update task.");
       console.error("Error updating task:", err);
+      handleSnackbar(err.message || "Failed to update task.");
     }
   };
 
@@ -157,10 +156,7 @@ const EditTaskForm = ({ task, onClose }) => {
             <EditNoteIcon />
             Update Task
           </UpdateButton>
-          <DeleteButton
-            onClick={handleConfirmOpen} // Open confirmation dialog
-            variant="contained"
-          >
+          <DeleteButton onClick={handleConfirmOpen} variant="contained">
             <DeleteIcon />
             Delete
           </DeleteButton>

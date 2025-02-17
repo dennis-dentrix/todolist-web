@@ -274,13 +274,17 @@ export const TaskFormContainer = styled.div`
   overflow-y: auto;
   border-left: 1px solid ${colors.border};
 
+  /* Media query for medium screens and below */
   @media (max-width: ${breakpoints.medium}) {
-    width: 100%;
-    position: static;
-    height: auto;
-    box-shadow: none;
+    width: max-content;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     border-left: none;
-    z-index: 1000;
+    overflow-y: auto;
+  }
+
+  /* Media query for small screens and below */
+  @media (max-width: ${breakpoints.small}) {
+    width: max-content;
   }
 `;
 

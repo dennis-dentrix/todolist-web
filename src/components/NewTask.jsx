@@ -45,7 +45,7 @@ const NewTask = ({ onClose }) => {
       setDescription("");
       setDueDate("");
       setError(""); // Clear error message
-      onClose(); // Close the form
+      onClose();
     } catch (err) {
       setError(err.message || "Failed to add task.");
       console.error("Error adding task:", err);
@@ -93,6 +93,7 @@ const NewTask = ({ onClose }) => {
           margin="normal"
           value={dueDate}
           onChange={(e) => setDueDate(e.target.value)}
+          InputLabelProps={{ shrink: true }}
         />
         <ButtonStyled type="submit" variant="contained" color="primary">
           Add Task

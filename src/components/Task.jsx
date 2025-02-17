@@ -10,12 +10,14 @@ const TaskContainer = styled.div`
   background-color: ${colors.white};
   border: 1px solid ${colors.border};
   border-radius: 8px;
-  padding: 15px;
+  padding: 1.5rem; /* Reduced horizontal padding for smaller screens */
   margin-bottom: 20px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-  width: 280px;
   transition: all 0.3s ease;
   position: relative;
+  width: 100%;
+  max-width: 600px;
+  box-sizing: border-box;
 
   &:hover {
     transform: translateY(-3px);
@@ -32,6 +34,14 @@ const TaskTitle = styled.h3`
   color: ${colors.text};
   font-size: 1.1em;
   font-weight: 600;
+
+  @media (min-width: ${breakpoints.small}) {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.8em;
+  }
 `;
 
 const TaskCategory = styled.span`
@@ -57,8 +67,12 @@ const TaskInfo = styled.div`
   justify-content: space-between;
   flex-direction: column;
 
-  @media (min-width: ${breakpoints.medium}) {
+  @media (min-width: ${breakpoints.small}) {
+    display: flex;
     flex-direction: row;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.8em;
   }
 `;
 
@@ -72,7 +86,7 @@ const TaskDueDate = styled.p`
 `;
 
 const TaskProgress = styled.p`
-  margin-top: 15px;
+  margin-top: 5px;
   font-style: italic;
   color: ${colors.textSecondary};
   font-size: 0.85em;
@@ -108,6 +122,14 @@ const Task = ({ task, onDelete, onEdit }) => {
     >
       <TaskTitle>
         {task.title} <TaskCategory>{task.category}</TaskCategory>
+        {task.status === "completed" && (
+          <DeleteIconBtn
+            onClick={(e) => {
+              e.stopPropagation(); // Prevent card click
+              onDelete(task._id);
+            }}
+          />
+        )}
       </TaskTitle>
       <TaskDescription>{task.description}</TaskDescription>
 
@@ -116,19 +138,11 @@ const Task = ({ task, onDelete, onEdit }) => {
           Due Date:
           <span>{displayDate}</span>
         </TaskDueDate>
+
         <TaskProgress>
           Progress: <span>{task.status}</span>
         </TaskProgress>
       </TaskInfo>
-
-      {task.status === "completed" && (
-        <DeleteIconBtn
-          onClick={(e) => {
-            e.stopPropagation(); // Prevent card click
-            onDelete(task._id);
-          }}
-        />
-      )}
     </TaskContainer>
   );
 };

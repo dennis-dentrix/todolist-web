@@ -27,6 +27,8 @@ export const ActionButtons = styled.div`
   padding-top: 1.3rem;
   display: flex;
   justify-content: space-between;
+  gap: 1rem;
+  align-items: center;
 `;
 
 export const UpdateButton = styled(Button)`
