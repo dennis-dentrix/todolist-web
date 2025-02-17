@@ -67,6 +67,7 @@ export const AuthProvider = ({ children }) => {
         password,
       });
       if (response.status === 200) {
+        console.log("Login Response:", response);
         setUser(response.data.data.user);
         setIsAuthenticated(true);
         setError(null);

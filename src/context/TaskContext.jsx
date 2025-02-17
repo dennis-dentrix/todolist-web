@@ -14,16 +14,10 @@ export const TaskProvider = ({ children }) => {
 
   useEffect(() => {
     const fetchTasks = async () => {
-      if (!isAuthenticated) {
-        setTasks([]);
-        setLoading(false);
-        return;
-      }
-
       setLoading(true);
       try {
-        const response = await api.get("/list", { withCredentials: true });
-        // console.log(response);
+        const response = await api.get("/list");
+        console.log("Task:", response);
         setTasks(response.data.data.list);
       } catch (error) {
         setError(
@@ -33,6 +27,13 @@ export const TaskProvider = ({ children }) => {
         setLoading(false);
       }
     };
+
+    console.log(isAuthenticated);
+    if (!isAuthenticated) {
+      setTasks([]);
+      setLoading(false);
+      return;
+    }
 
     fetchTasks();
   }, [isAuthenticated]);

@@ -62,6 +62,7 @@ const Home = ({ searchTerm }) => {
   );
 
   if (loading) return <Loader />;
+  // console.log("Tasks:", tasks);
   return (
     <HomeContainer>
       <TaskSection>

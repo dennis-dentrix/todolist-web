@@ -173,7 +173,11 @@ const User = () => {
       </PasswordInput>
 
       <ActionButtons>
-        <SaveChangesButton variant="contained" onClick={handleSaveChanges}>
+        <SaveChangesButton
+          variant="contained"
+          onClick={handleSaveChanges}
+          disabled={loading}
+        >
           Save Changes
         </SaveChangesButton>
 
@@ -182,9 +186,13 @@ const User = () => {
           onClick={handleUpdatePassword}
           disabled={loading} // Disable the button while loading
         >
-          {loading ? "Updating..." : "Update Password"}
+          Update Password
         </ButtonStyled>
-        <ButtonStyled variant="contained" onClick={handleLogout}>
+        <ButtonStyled
+          variant="contained"
+          onClick={handleLogout}
+          disabled={loading}
+        >
           Logout
         </ButtonStyled>
       </ActionButtons>
