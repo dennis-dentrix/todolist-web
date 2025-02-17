@@ -11,13 +11,13 @@ import ForgotPassword from "./user/Forgotpassword";
 import ResetPassword from "./user/ResetPassword";
 import { AuthProvider } from "./context/AuthContext";
 import ProtectedRoute from "./utils/ProtectedRoute";
-import AppLayout from "./components/AppLayout";
 import { AppContainer, Content } from "./styles/Styles";
 import User from "./user/User";
 import Home from "./components/Home";
 import { TaskProvider } from "./context/TaskContext";
 import NotFound from "./components/Notfound";
 import EditTaskForm from "./components/EditTaskForm";
+import AppLayout from "./components/Applayout";
 
 const Backdrop = styled.div`
   position: fixed;
