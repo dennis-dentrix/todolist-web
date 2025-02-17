@@ -1,7 +1,4 @@
 /* eslint-disable react/prop-types */
-
-// eslint-disable-next-line no-unused-vars
-import React from "react";
 import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../utils/httpCommon";
@@ -13,8 +10,8 @@ export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [snackbarOpen, setSnackbarOpen] = useState(false); // Snackbar state
-  const [snackbarMessage, setSnackbarMessage] = useState(""); // Snackbar message
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
 
   const showSnackbar = (message) => {
     setSnackbarMessage(message);
@@ -25,17 +22,23 @@ export const AuthProvider = ({ children }) => {
     setSnackbarOpen(false);
   };
 
-  // useCallback to prevent unnecessary re-renders and avoid infinite loops
   const checkAuth = useCallback(async () => {
     setLoading(true);
     try {
-      const response = await api.get("/users/current"); // Endpoint to check current user
-      if (response.status === 200) {
-        setUser(response.data.data.user);
-        setIsAuthenticated(true);
-        setError(null); // Clear any previous errors
+      const token = localStorage.getItem("jwtToken"); // Get token from localStorage
+      if (token) {
+        api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+        const response = await api.get("/users/current");
+        if (response.status === 200) {
+          setUser(response.data.data.user);
+          setIsAuthenticated(true);
+          setError(null);
+        } else {
+          throw new Error("Failed to authenticate");
+        }
       } else {
-        throw new Error("Failed to authenticate");
+        setIsAuthenticated(false);
+        setUser(null);
       }
     } catch (err) {
       setIsAuthenticated(false);
@@ -43,12 +46,6 @@ export const AuthProvider = ({ children }) => {
       setError(
         err.response ? err.response.data.message : "Failed to authenticate"
       );
-      // Clear Cookies
-      document.cookie.split(";").forEach((c) => {
-        document.cookie = c
-          .replace(/^ +/, "")
-          .replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
-      });
     } finally {
       setLoading(false);
     }
@@ -67,27 +64,27 @@ export const AuthProvider = ({ children }) => {
         password,
       });
       if (response.status === 200) {
-        console.log("Login Response:", response);
+        const token = response.data.token; //Get token from response
+
+        localStorage.setItem("jwtToken", token); // Save token in localStorage
+        api.defaults.headers.common["Authorization"] = `Bearer ${token}`; // Set token in headers
+
         setUser(response.data.data.user);
         setIsAuthenticated(true);
         setError(null);
-        showSnackbar("Login successful!"); // Show success snackbar
+        showSnackbar("Login successful!");
         navigate("/");
       } else {
         setError("Login failed");
-        showSnackbar("Login failed. Please try again."); //Show failure snackbar
+        showSnackbar("Login failed. Please try again.");
       }
     } catch (err) {
       setIsAuthenticated(false);
       setUser(null);
-      if (err.response && err.response.status === 401) {
-        showSnackbar("Incorrect email or password. Please try again."); // Specific message for invalid credentials
-      } else {
-        showSnackbar(
-          "Login failed. Please check your credentials and try again."
-        );
-      }
-      // setError(err.response ? err.response.data.message : "Login failed"); // Removed setError since snackbar is used
+      setError(err.response ? err.response.data.message : "Login failed");
+      showSnackbar(
+        err.response?.data?.message || "Login failed. Please try again."
+      );
     } finally {
       setLoading(false);
     }
@@ -105,32 +102,31 @@ export const AuthProvider = ({ children }) => {
       });
 
       if (response.status === 201) {
+        const token = response.data.token; //Get token from response
+
+        localStorage.setItem("jwtToken", token); // Save token in localStorage
+        api.defaults.headers.common["Authorization"] = `Bearer ${token}`; // Set token in headers
+
         setUser(response.data.data.user);
         setIsAuthenticated(true);
-        showSnackbar("Signup successful!"); // Show success snackbar
+        showSnackbar("Signup successful!");
         navigate("/");
       } else {
         setError("Signup failed");
-        showSnackbar("Signup failed. Please try again."); //Show failure snackbar
+        showSnackbar("Signup failed. Please try again.");
       }
     } catch (err) {
       setIsAuthenticated(false);
       setUser(null);
-      if (
-        err.response &&
-        err.response.status === 400 &&
-        err.response.data.message.includes("already registered")
-      ) {
-        showSnackbar(
-          "An account with this email already exists. Please log in."
-        ); // Specific message for existing account
-        navigate("/login");
-      } else {
-        showSnackbar("Error creating account. Try again later.");
-      }
-      // setError( //Removed setError since snackbar is used
-      // err.response ? err.response.data.message : "Error creating account. Try again later."
-      // );
+      setError(
+        err.response
+          ? err.response.data.message
+          : "Error creating account. Try again later."
+      );
+      showSnackbar(
+        err.response?.data?.message ||
+          "Error creating account. Try again later."
+      );
     } finally {
       setLoading(false);
     }
@@ -139,15 +135,15 @@ export const AuthProvider = ({ children }) => {
   const logout = async () => {
     setLoading(true);
     try {
+      localStorage.removeItem("jwtToken");
+      delete api.defaults.headers.common["Authorization"];
+      //Clear Auth Headers
       await api.get("/users/logout");
-      // console.log("Logout Response:", response);
-
       setUser(null);
       setIsAuthenticated(false);
-      setError(null); // Clear any previous errors
-      navigate("/login"); // Redirect to login page after logout
+      setError(null);
+      navigate("/");
     } catch (err) {
-      // console.error("Logout Error:", err.message);
       setError(err.response ? err.response.data.message : "Logout failed");
     } finally {
       setLoading(false);
@@ -160,8 +156,7 @@ export const AuthProvider = ({ children }) => {
       await api.post("/users/forgotPassword", {
         email,
       });
-      // Handle success (e.g., show a success message to the user)
-      setError(null); // Clear any previous errors
+      setError(null);
     } catch (err) {
       setError(
         err.response
@@ -182,6 +177,11 @@ export const AuthProvider = ({ children }) => {
       });
 
       if (response.status === 200) {
+        const token = response.data.token; //Get token from response
+
+        localStorage.setItem("jwtToken", token); // Save token in localStorage
+        api.defaults.headers.common["Authorization"] = `Bearer ${token}`; // Set token in headers
+
         setUser(response.data.data.user);
         setIsAuthenticated(true);
         setError(null);
@@ -193,7 +193,6 @@ export const AuthProvider = ({ children }) => {
       setIsAuthenticated(false);
       setUser(null);
 
-      // Check if the error is due to an expired token
       if (err.response && err.response.status === 400) {
         setError("Token has expired. Please request a new password reset.");
       } else {
@@ -208,17 +207,22 @@ export const AuthProvider = ({ children }) => {
 
   const updatePassword = async (currentPassword, newPassword) => {
     setLoading(true);
-    setError(null); // Clear any previous errors
+    setError(null);
     try {
       const response = await api.patch("/users/updateMyPassword", {
         passwordCurrent: currentPassword,
         password: newPassword,
-        passwordConfirm: newPassword, // Backend usually requires confirmation
+        passwordConfirm: newPassword,
       });
 
       if (response.status === 200) {
-        setUser(response.data.data.user); // Update user data if needed
-        setError(null); // Clear any previous errors
+        const token = response.data.token; //Get token from response
+
+        localStorage.setItem("jwtToken", token); // Save token in localStorage
+        api.defaults.headers.common["Authorization"] = `Bearer ${token}`; // Set token in headers
+
+        setUser(response.data.data.user);
+        setError(null);
         return { success: true, message: "Password updated successfully" };
       } else {
         setError("Password update failed");
@@ -253,7 +257,7 @@ export const AuthProvider = ({ children }) => {
         closeSnackbar,
       }}
     >
-      {children}{" "}
+      {children}
     </AuthContext.Provider>
   );
 };
