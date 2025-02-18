@@ -90,6 +90,7 @@ const User = () => {
   const [username, setUsername] = useState(user?.name || "");
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
+  const [passwordConfirm, setPasswordConfirm] = useState("");
 
   useEffect(() => {
     setUsername(user?.name || "");
@@ -116,6 +117,12 @@ const User = () => {
   };
 
   const handleUpdatePassword = async () => {
+    if (newPassword !== passwordConfirm) {
+      setSnackbarMessage("New password and confirm password do not match!");
+      setSnackbarOpen(true);
+      return;
+    }
+
     try {
       const result = await updatePassword(currentPassword, newPassword);
 
@@ -124,6 +131,7 @@ const User = () => {
         setSnackbarOpen(true);
         setCurrentPassword("");
         setNewPassword("");
+        setPasswordConfirm("");
       } else {
         setSnackbarMessage(
           result.message || "Password update failed. Try again!"
@@ -169,6 +177,14 @@ const User = () => {
           type="password"
           value={newPassword}
           onChange={(e) => setNewPassword(e.target.value)}
+        />
+
+        <InputField
+          fullWidth
+          label="Confirm Password"
+          type="password"
+          value={passwordConfirm}
+          onChange={(e) => setPasswordConfirm(e.target.value)}
         />
       </PasswordInput>
 

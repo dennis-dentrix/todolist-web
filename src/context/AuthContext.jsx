@@ -81,10 +81,8 @@ export const AuthProvider = ({ children }) => {
     } catch (err) {
       setIsAuthenticated(false);
       setUser(null);
-      setError(err.response ? err.response.data.message : "Login failed");
-      showSnackbar(
-        err.response?.data?.message || "Login failed. Please try again."
-      );
+      setError("The email or password is incorrect");
+      console.log(err.response?.data?.message);
     } finally {
       setLoading(false);
     }
@@ -113,20 +111,17 @@ export const AuthProvider = ({ children }) => {
         navigate("/");
       } else {
         setError("Signup failed");
-        showSnackbar("Signup failed. Please try again.");
+        // showSnackbar("Signup failed. Please try again.");
       }
     } catch (err) {
       setIsAuthenticated(false);
       setUser(null);
-      setError(
-        err.response
-          ? err.response.data.message
-          : "Error creating account. Try again later."
-      );
-      showSnackbar(
-        err.response?.data?.message ||
-          "Error creating account. Try again later."
-      );
+      setError("Error creating account. Try again later.");
+      console.log(err.response?.data?.message);
+      // showSnackbar(
+      //   err.response?.data?.message ||
+      //     "Error creating account. Try again later."
+      // );
     } finally {
       setLoading(false);
     }
@@ -144,7 +139,8 @@ export const AuthProvider = ({ children }) => {
       setError(null);
       navigate("/");
     } catch (err) {
-      setError(err.response ? err.response.data.message : "Logout failed");
+      console.log(err.response);
+      setError("Logout failed");
     } finally {
       setLoading(false);
     }
