@@ -173,10 +173,8 @@ export const AuthProvider = ({ children }) => {
       });
 
       if (response.status === 200) {
-        const token = response.data.token; //Get token from response
-
-        localStorage.setItem("jwtToken", token); // Save token in localStorage
-        api.defaults.headers.common["Authorization"] = `Bearer ${token}`; // Set token in headers
+        // localStorage.setItem("jwtToken", token);
+        // api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 
         setUser(response.data.data.user);
         setIsAuthenticated(true);

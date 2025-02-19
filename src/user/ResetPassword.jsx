@@ -54,23 +54,14 @@ const Input = styled.input`
 
 const Button = styled.button`
   background-color: #007bff;
-  border: none;
-  -webkit-text-decoration: none;
-  text-decoration: none;
-  color: #fff;
-  font-weight: 500;
-  display: block;
-  padding: 12px 20px;
-  border-radius: 6px;
-  text-align: center;
-  font-size: 1em;
-  -webkit-transition: background-color 0.3s;
-  transition: background-color 0.3s;
-  width: 100%;
+  // Add hover effect
+  transition: background-color 0.3s ease-in-out;
 
   &:hover {
     background-color: #0056b3;
   }
+
+  // other styles...
 `;
 
 const ActionButtons = styled.div`
@@ -83,7 +74,6 @@ const ActionButtons = styled.div`
 const ResetPassword = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  // eslint-disable-next-line no-unused-vars
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
   const { resetPassword, error } = useAuth();
@@ -92,16 +82,23 @@ const ResetPassword = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    e.preventDefault();
-    await resetPassword(token, password, confirmPassword);
+    // Call the reset password function
+    const response = await resetPassword(token, password, confirmPassword);
 
-    // If reset is successful and no error is set, navigate to login or home
-    if (!error) {
-      navigate("/login"); // Redirect to login page after successful reset
+    // Check if there was an error
+    if (response.success) {
+      setMessage("Password reset successful! Redirecting...");
+      // Clear inputs
+      setPassword("");
+      setConfirmPassword("");
+
+      // Redirect after a short delay
+      setTimeout(() => {
+        navigate("/login"); // Redirect to login page after successful reset
+      }, 2000); // Redirect after a delay of two seconds
+    } else {
+      setMessage(error || "An error occurred. Please try again.");
     }
-    setTimeout(() => {
-      navigate("/login");
-    }, 2000); // Redirect after 2 seconds
   };
 
   return (
@@ -127,7 +124,7 @@ const ResetPassword = () => {
         />
         <ActionButtons>
           <Button type="submit">Reset Password</Button>
-          <StyledLink type="submit">Back To login</StyledLink>
+          <StyledLink to="/login">Back To Login</StyledLink>
         </ActionButtons>
       </ResetPasswordForm>
     </PageContainer>
