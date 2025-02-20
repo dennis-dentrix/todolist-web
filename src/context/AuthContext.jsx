@@ -167,7 +167,7 @@ export const AuthProvider = ({ children }) => {
   const resetPassword = async (token, password, passwordConfirm) => {
     setLoading(true);
     try {
-      const response = await api.patch(`/users/resetPassword/:${token}`, {
+      const response = await api.patch(`/users/resetPassword/${token}`, {
         password,
         passwordConfirm,
       });
