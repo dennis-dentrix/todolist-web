@@ -2,7 +2,7 @@ import { useState } from "react";
 import { styled } from "styled-components";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../context/useAuth";
-import { StyledLink } from "../styles/Styles";
+import { AuthenticateBtn, StyledLink } from "../styles/Styles";
 
 const PageContainer = styled.div`
   display: flex;
@@ -52,17 +52,21 @@ const Input = styled.input`
   font-size: 1em;
 `;
 
-const Button = styled.button`
-  background-color: #007bff;
-  // Add hover effect
-  transition: background-color 0.3s ease-in-out;
+// const Button = styled.button`
+//   background-color: #007bff;
+//   color: white;
+//   padding: 10px 15px;
+//   border: none;
+//   border-radius: 6px;
+//   font-size: 1em;
+//   cursor: pointer;
+//   width: 100%;
+//   transition: background-color 0.3s ease-in-out;
 
-  &:hover {
-    background-color: #0056b3;
-  }
-
-  // other styles...
-`;
+//   &:hover {
+//     background-color: #0056b3;
+//   }
+// `;
 
 const ActionButtons = styled.div`
   padding: 1.3rem;
@@ -71,10 +75,21 @@ const ActionButtons = styled.div`
   gap: 10px;
 `;
 
+const ErrorMessage = styled.p`
+  color: #dc3545;
+  margin-bottom: 15px;
+`;
+
+const SuccessMessage = styled.p`
+  color: #28a745;
+  margin-bottom: 15px;
+`;
+
 const ResetPassword = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [message, setMessage] = useState("");
+  const [isSuccess, setIsSuccess] = useState(false);
   const navigate = useNavigate();
   const { resetPassword, error } = useAuth();
   const { token } = useParams();
@@ -82,22 +97,28 @@ const ResetPassword = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Call the reset password function
-    const response = await resetPassword(token, password, confirmPassword);
-    console.log(response);
+    // Check if passwords match
+    if (password !== confirmPassword) {
+      setMessage("Passwords do not match");
+      return;
+    }
 
-    // Check if there was an error
-    if (response.success) {
-      setMessage("Password reset successful! Redirecting...");
+    // Call the reset password function
+    const success = await resetPassword(token, password, confirmPassword);
+
+    if (success) {
+      setIsSuccess(true);
+      setMessage("Password reset successful! Redirecting to login...");
       // Clear inputs
       setPassword("");
       setConfirmPassword("");
 
       // Redirect after a short delay
       setTimeout(() => {
-        navigate("/login"); // Redirect to login page after successful reset
-      }, 2000); // Redirect after a delay of two seconds
+        navigate("/login");
+      }, 2000);
     } else {
+      setIsSuccess(false);
       setMessage(error || "An error occurred. Please try again.");
     }
   };
@@ -108,13 +129,21 @@ const ResetPassword = () => {
       <ResetPasswordForm onSubmit={handleSubmit}>
         <Title>Reset Password</Title>
         <Description>Enter your new password.</Description>
-        {message && <p>{message}</p>}
+
+        {message &&
+          (isSuccess ? (
+            <SuccessMessage>{message}</SuccessMessage>
+          ) : (
+            <ErrorMessage>{message}</ErrorMessage>
+          ))}
+
         <Input
           type="password"
           placeholder="New Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
+          minLength="8"
         />
         <Input
           type="password"
@@ -122,9 +151,11 @@ const ResetPassword = () => {
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
           required
+          minLength="8"
         />
         <ActionButtons>
-          <Button type="submit">Reset Password</Button>
+          <AuthenticateBtn type="submit">Login</AuthenticateBtn>
+
           <StyledLink to="/login">Back To Login</StyledLink>
         </ActionButtons>
       </ResetPasswordForm>
