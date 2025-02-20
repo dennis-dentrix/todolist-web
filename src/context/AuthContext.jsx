@@ -167,21 +167,19 @@ export const AuthProvider = ({ children }) => {
   const resetPassword = async (token, password, passwordConfirm) => {
     setLoading(true);
     try {
-      const response = await api.patch(`/users/resetPassword/:${token}`, {
+      const response = await api.patch(`/users/resetpassword/:${token}`, {
         password,
         passwordConfirm,
       });
 
       if (response.status === 200) {
-        // localStorage.setItem("jwtToken", token);
-        // api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-
         setUser(response.data.data.user);
         setIsAuthenticated(true);
         setError(null);
         navigate("/login");
+        return true;
       } else {
-        setError("Password reset failed");
+        setError("Password reset failed...");
       }
     } catch (err) {
       setIsAuthenticated(false);

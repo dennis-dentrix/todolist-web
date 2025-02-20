@@ -84,6 +84,7 @@ const ResetPassword = () => {
 
     // Call the reset password function
     const response = await resetPassword(token, password, confirmPassword);
+    console.log(response);
 
     // Check if there was an error
     if (response.success) {

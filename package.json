@@ -15,8 +15,11 @@
     "@mui/icons-material": "^6.4.4",
     "@mui/material": "^6.4.4",
     "@mui/styled-engine-sc": "^6.4.3",
+    "@react-email/components": "^0.0.33",
+    "@react-email/render": "^1.0.5",
     "@reduxjs/toolkit": "^2.5.1",
     "axios": "^1.7.9",
+    "mailersend": "^2.3.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-redux": "^9.2.0",
@@ -24,6 +27,7 @@
     "react-router-dom": "^7.1.5",
     "react-toastify": "^11.0.3",
     "redux": "^5.0.1",
+    "resend": "^4.1.2",
     "styled-components": "^6.1.15"
   },
   "devDependencies": {
