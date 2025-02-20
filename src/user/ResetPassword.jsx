@@ -154,7 +154,7 @@ const ResetPassword = () => {
           minLength="8"
         />
         <ActionButtons>
-          <AuthenticateBtn type="submit">Login</AuthenticateBtn>
+          <AuthenticateBtn type="submit">Reset Password</AuthenticateBtn>
 
           <StyledLink to="/login">Back To Login</StyledLink>
         </ActionButtons>
