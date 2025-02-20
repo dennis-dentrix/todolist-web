@@ -179,7 +179,7 @@ export const AuthProvider = ({ children }) => {
         setUser(response.data.data.user);
         setIsAuthenticated(true);
         setError(null);
-        navigate("/");
+        navigate("/login");
       } else {
         setError("Password reset failed");
       }
