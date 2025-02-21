@@ -27,8 +27,7 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const [emailError, setEmailError] = useState("");
-  const [passwordError, setPasswordError] = useState("");
+  const [error, setError] = useState(""); // Single error state
 
   const {
     loginUser,
@@ -36,7 +35,6 @@ const Login = () => {
     snackbarMessage,
     closeSnackbar,
     isAuthenticated,
-    error,
     loading,
   } = useAuth();
 
@@ -46,20 +44,14 @@ const Login = () => {
     let isValid = true;
 
     if (!email) {
-      setEmailError("Email is required");
+      setError("Email is required");
       isValid = false;
     } else if (!/\S+@\S+\.\S+/.test(email)) {
-      setEmailError("Email is invalid");
+      setError("Email is invalid");
       isValid = false;
-    } else {
-      setEmailError("");
-    }
-
-    if (!password) {
-      setPasswordError("Password is required");
+    } else if (!password) {
+      setError("Password is required");
       isValid = false;
-    } else {
-      setPasswordError("");
     }
 
     return isValid;
@@ -72,7 +64,15 @@ const Login = () => {
       return; // If validation fails, exit the function
     }
 
-    await loginUser(email, password); // Call login function
+    // Reset error before attempting to log in
+    setError("");
+
+    const success = await loginUser(email, password); // Call login function
+
+    // Check for errors after login attempt
+    if (!success) {
+      setError("Login failed. Please check your credentials."); // Set a generic error message
+    }
   };
 
   useEffect(() => {
@@ -91,18 +91,22 @@ const Login = () => {
           type="email"
           placeholder="Email"
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          onChange={(e) => {
+            setEmail(e.target.value);
+            setError(""); // Reset error on input change
+          }}
           required
         />
-        {emailError && <ErrorMessage>{emailError}</ErrorMessage>}
         <Input
           type="password"
           placeholder="Password"
           value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          onChange={(e) => {
+            setPassword(e.target.value);
+            setError(""); // Reset error on input change
+          }}
           required
         />
-        {passwordError && <ErrorMessage>{passwordError}</ErrorMessage>}
         {error && <ErrorMessage>{error}</ErrorMessage>}{" "}
         {/* Display API error */}
         <ForgotPasswordLink to={"/forgotpassword"}>
