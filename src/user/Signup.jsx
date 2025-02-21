@@ -20,7 +20,7 @@ const Signup = () => {
   const {
     signup,
     loading,
-    error: apiError, // Renamed for clarity
+    error,
     snackbarMessage,
     snackbarOpen,
     closeSnackbar,
@@ -31,43 +31,54 @@ const Signup = () => {
   const [password, setPassword] = useState("");
   const [passwordConfirm, setPasswordConfirm] = useState("");
 
-  const [formError, setFormError] = useState(""); // Consolidated error state
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+
+  // Additional state for API error
+  const [apiError, setApiError] = useState("");
 
   const validateForm = () => {
+    let isValid = true;
+
     if (!email) {
-      setFormError("Email is required");
-      return false;
+      setEmailError("Email is required");
+      isValid = false;
     } else if (!/\S+@\S+\.\S+/.test(email)) {
-      setFormError("Email is invalid");
-      return false;
+      setEmailError("Email is invalid");
+      isValid = false;
+    } else {
+      setEmailError("");
     }
 
     if (!password) {
-      setFormError("Password is required");
-      return false;
+      setPasswordError("Password is required");
+      isValid = false;
     } else if (password.length < 8) {
-      setFormError("Password must be at least 8 characters long");
-      return false;
+      setPasswordError("Password must be at least 8 characters long");
+      isValid = false;
     } else if (password !== passwordConfirm) {
-      setFormError("Passwords do not match!");
-      return false;
+      setPasswordError("Passwords do not match!");
+      isValid = false;
+    } else {
+      setPasswordError("");
     }
 
-    setFormError(""); // Clear error if validation passes
-    return true;
+    return isValid;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!validateForm()) return; // Exit if validation fails
+    if (!validateForm()) return;
 
     // Reset API error before attempting to sign up
+    setApiError("");
+
     await signup(name, email, password, passwordConfirm);
 
     // Check for errors after signup attempt
-    if (apiError) {
-      setFormError(apiError); // Set API error message
+    if (error) {
+      setApiError(error); // Set API error message
     }
   };
 
@@ -84,45 +95,33 @@ const Signup = () => {
           type="text"
           placeholder="Name"
           value={name}
-          onChange={(e) => {
-            setName(e.target.value);
-            setFormError(""); // Reset error on input change
-          }}
+          onChange={(e) => setName(e.target.value)}
           required
         />
         <Input
           type="email"
           placeholder="Email"
           value={email}
-          onChange={(e) => {
-            setEmail(e.target.value);
-            setFormError(""); // Reset error on input change
-          }}
+          onChange={(e) => setEmail(e.target.value)}
           required
         />
-
-        {/* Display form error message */}
-        {formError && <ErrorMessage>{formError}</ErrorMessage>}
+        {emailError && <ErrorMessage>{emailError}</ErrorMessage>}
 
         <Input
           type="password"
           placeholder="Password"
           value={password}
-          onChange={(e) => {
-            setPassword(e.target.value);
-            setFormError(""); // Reset error on input change
-          }}
+          onChange={(e) => setPassword(e.target.value)}
           required
         />
+
+        {passwordError && <ErrorMessage>{passwordError}</ErrorMessage>}
 
         <Input
           type="password"
           placeholder="Confirm your password"
           value={passwordConfirm}
-          onChange={(e) => {
-            setPasswordConfirm(e.target.value);
-            setFormError(""); // Reset error on input change
-          }}
+          onChange={(e) => setPasswordConfirm(e.target.value)}
           required
         />
 
