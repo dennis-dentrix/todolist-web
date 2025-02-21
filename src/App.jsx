@@ -18,6 +18,8 @@ import { TaskProvider } from "./context/TaskContext";
 import NotFound from "./components/Notfound";
 import EditTaskForm from "./components/EditTaskForm";
 import AppLayout from "./components/Applayout";
+import VerifyOTP from "./user/VerifyOtp";
+import VerifyEmail from "./user/VerifyEmail";
 
 const Backdrop = styled.div`
   position: fixed;
@@ -53,9 +55,11 @@ const App = () => {
               <Routes>
                 <Route path="/login" element={<Login />} />
                 <Route path="/signup" element={<Signup />} />
+                <Route path="/verifyEmail/:userId" element={<VerifyEmail />} />
                 <Route path="/forgotpassword" element={<ForgotPassword />} />
+                <Route path="/verify-otp" element={<VerifyOTP />} />
                 <Route
-                  path="/resetPassword/:token"
+                  path="/resetPassword/:userId"
                   element={<ResetPassword />}
                 />
 

@@ -92,7 +92,7 @@ const ResetPassword = () => {
   const [isSuccess, setIsSuccess] = useState(false);
   const navigate = useNavigate();
   const { resetPassword, error } = useAuth();
-  const { token } = useParams();
+  const { userId } = useParams();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -104,7 +104,7 @@ const ResetPassword = () => {
     }
 
     // Call the reset password function
-    const success = await resetPassword(token, password, confirmPassword);
+    const success = await resetPassword(userId, password, confirmPassword);
 
     if (success) {
       setIsSuccess(true);

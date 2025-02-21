@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { styled } from "styled-components";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Snackbar } from "@mui/material";
 import { useAuth } from "../context/useAuth";
 
@@ -86,6 +86,7 @@ const ForgotPassword = () => {
 
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
+  const navigate = useNavigate();
 
   // eslint-disable-next-line no-unused-vars
   const [apiError, setApiError] = useState("");
@@ -99,8 +100,9 @@ const ForgotPassword = () => {
 
     try {
       await forgotPassword(email);
-      setSnackbarMessage("Reset link sent to your email!");
+      setSnackbarMessage("Reset OTP sent to your email!");
       setSnackbarOpen(true);
+      navigate("/verify-otp");
     } catch (error) {
       setApiError(error); // Set API error message for display
     }

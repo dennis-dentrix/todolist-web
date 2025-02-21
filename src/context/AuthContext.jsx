@@ -25,7 +25,7 @@ export const AuthProvider = ({ children }) => {
   const checkAuth = useCallback(async () => {
     setLoading(true);
     try {
-      const token = localStorage.getItem("jwtToken"); // Get token from localStorage
+      const token = localStorage.getItem("jwtToken");
       if (token) {
         api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
         const response = await api.get("/users/current");
@@ -99,29 +99,46 @@ export const AuthProvider = ({ children }) => {
         passwordConfirm,
       });
 
+      // console.log(response);
       if (response.status === 201) {
-        const token = response.data.token; //Get token from response
+        showSnackbar(
+          "Signup successful! Please check your email for the verification OTP."
+        );
 
-        localStorage.setItem("jwtToken", token); // Save token in localStorage
-        api.defaults.headers.common["Authorization"] = `Bearer ${token}`; // Set token in headers
+        // Extract user ID from the response
+        const userId = response.data.userId;
+        // console.log("user ID", userId);
 
-        setUser(response.data.data.user);
-        setIsAuthenticated(true);
-        showSnackbar("Signup successful!");
-        navigate("/");
+        // Redirect to verify email page with userId as a URL parameter
+        navigate(`/verifyEmail/${userId}`);
       } else {
         setError("Signup failed");
-        // showSnackbar("Signup failed. Please try again.");
       }
     } catch (err) {
       setIsAuthenticated(false);
       setUser(null);
-      setError("Error creating account. Try again later.");
+      setError(
+        err.response?.data?.message ||
+          "Error creating account. Try again later."
+      );
       console.log(err.response?.data?.message);
-      // showSnackbar(
-      //   err.response?.data?.message ||
-      //     "Error creating account. Try again later."
-      // );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Verify Email function
+  const verifyEmail = async (userId, otp) => {
+    setLoading(true);
+    try {
+      const response = await api.post(`/users/verifyEmail/${userId}`, { otp });
+      if (response.status === 200) {
+        showSnackbar("Email verified successfully! You can now log in.");
+        navigate("/login");
+      }
+    } catch (err) {
+      setError(err.response?.data?.message || "Email verification failed.");
+      console.log(err.response?.data?.message || "Email verification failed.");
     } finally {
       setLoading(false);
     }
@@ -164,10 +181,10 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const resetPassword = async (token, password, passwordConfirm) => {
+  const resetPassword = async (userId, password, passwordConfirm) => {
     setLoading(true);
     try {
-      const response = await api.patch(`/resetPassword/${token}`, {
+      const response = await api.patch(`/users/resetPassword/${userId}`, {
         password,
         passwordConfirm,
       });
@@ -175,16 +192,12 @@ export const AuthProvider = ({ children }) => {
       if (response.status === 200) {
         setUser(response.data.data.user);
         setIsAuthenticated(true);
-        setError(null);
         navigate("/login");
         return true;
       } else {
         setError("Password reset failed...");
       }
     } catch (err) {
-      setIsAuthenticated(false);
-      setUser(null);
-
       if (err.response && err.response.status === 400) {
         setError("Token has expired. Please request a new password reset.");
       } else {
@@ -192,6 +205,26 @@ export const AuthProvider = ({ children }) => {
           err.response ? err.response.data.message : "Password reset failed"
         );
       }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // New OTP Verification function
+  const verifyResetOTP = async (otp) => {
+    setLoading(true);
+    try {
+      const response = await api.post("/users/verifyResetOTP", { otp });
+
+      if (response.status === 200) {
+        showSnackbar("OTP verified successfully!");
+        return response.data.userId; // Return user ID for further actions
+      }
+
+      return null; // If verification fails
+    } catch (err) {
+      setError(err.response?.data?.message || "OTP verification failed.");
+      return null; // Indicate failure
     } finally {
       setLoading(false);
     }
@@ -235,10 +268,12 @@ export const AuthProvider = ({ children }) => {
     <AuthContext.Provider
       value={{
         signup,
+        verifyEmail,
         loginUser,
         logout,
         forgotPassword,
         resetPassword,
+        verifyResetOTP,
         updatePassword,
         user,
         isAuthenticated,

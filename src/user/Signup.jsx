@@ -1,5 +1,4 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 import {
   AuthenticateBtn,
   Title,
@@ -16,44 +15,16 @@ import {
 import { useAuth } from "../context/useAuth";
 import Loader from "../components/Loader";
 import CustomSnackbar from "../components/CustomSnackBar";
-// import VisibilityIcon from "@mui/icons-material/Visibility";
-// import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
-
-// const PasswordContainer = styled.div`
-//   position: relative;
-//   display: flex;
-//   align-items: center;
-//   border-bottom: 1px solid #ddd;
-
-//   margin-bottom: 15px;
-//   width: 100%;
-// `;
-
-// const PassInput = styled.input`
-//   border: none;
-//   outline: none;
-//   width: 100%;
-//   padding: 10px;
-//   font-size: 1em;
-// `;
-
-// const PasswordToggleIcon = styled.span`
-//   position: absolute;
-//   right: 10px;
-//   cursor: pointer;
-// `;
 
 const Signup = () => {
-  const navigate = useNavigate();
   const {
     signup,
-    isAuthenticated,
     loading,
     error,
     snackbarMessage,
     snackbarOpen,
     closeSnackbar,
-  } = useAuth(); // Get error state from context
+  } = useAuth();
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -65,9 +36,6 @@ const Signup = () => {
 
   // Additional state for API error
   const [apiError, setApiError] = useState("");
-
-  // State for showing/hiding passwords
-  // const [showPassword, setShowPassword] = useState(false);
 
   const validateForm = () => {
     let isValid = true;
@@ -101,9 +69,7 @@ const Signup = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!validateForm()) {
-      return; // If validation fails, exit the function
-    }
+    if (!validateForm()) return;
 
     // Reset API error before attempting to sign up
     setApiError("");
@@ -115,10 +81,6 @@ const Signup = () => {
       setApiError(error); // Set API error message
     }
   };
-
-  useEffect(() => {
-    if (isAuthenticated) navigate("/", { replace: true });
-  }, [isAuthenticated, navigate]);
 
   if (loading) return <Loader />;
 
@@ -146,7 +108,7 @@ const Signup = () => {
         {emailError && <ErrorMessage>{emailError}</ErrorMessage>}
 
         <Input
-          type="password" // Toggle input type based on state
+          type="password"
           placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
