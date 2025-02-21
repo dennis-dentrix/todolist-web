@@ -156,7 +156,7 @@ export const AuthProvider = ({ children }) => {
       setError(null);
       navigate("/");
     } catch (err) {
-      console.log(err.response || err.message);
+      console.log(err.response);
       setError("Logout failed");
     } finally {
       setLoading(false);
