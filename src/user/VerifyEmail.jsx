@@ -3,6 +3,7 @@ import { styled } from "styled-components";
 import { useParams } from "react-router-dom";
 import { AuthenticateBtn, StyledLink } from "../styles/Styles";
 import { useAuth } from "../context/useAuth";
+import Loader from "../components/Loader";
 
 const PageContainer = styled.div`
   display: flex;
@@ -60,7 +61,7 @@ const SuccessMessage = styled.p`
 `;
 
 const VerifyEmail = () => {
-  const { verifyEmail } = useAuth(); // Use verifyEmail function from context
+  const { verifyEmail, loading } = useAuth(); // Use verifyEmail function from context
   const { userId } = useParams(); // Get userId from URL parameters
 
   const [otp, setOtp] = useState("");
@@ -82,7 +83,7 @@ const VerifyEmail = () => {
       setMessage(error || "Email verification failed.");
     }
   };
-
+  if (loading) return <Loader />;
   return (
     <PageContainer>
       <SiteName>Task Manager</SiteName>
@@ -104,8 +105,12 @@ const VerifyEmail = () => {
           required
         />
         <ActionButtons>
-          <AuthenticateBtn type="submit">Verify OTP</AuthenticateBtn>
-          <StyledLink to="/login">Back To Login</StyledLink>
+          <AuthenticateBtn type="submit" disabled={loading}>
+            Verify OTP
+          </AuthenticateBtn>
+          <StyledLink to="/login" disabled={loading}>
+            Back To Login
+          </StyledLink>
         </ActionButtons>
       </VerifyEmailForm>
     </PageContainer>
